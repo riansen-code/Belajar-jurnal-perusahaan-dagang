@@ -1,11 +1,36 @@
 <!DOCTYPE html>
-<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#123c35">
+<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#123c35"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Belajar Transaksi">
 <title>Belajar Transaksi Perusahaan Dagang | UD Lestari Makmur</title>
 <style>
 :root{--green:#123c35;--green2:#1e6557;--mint:#e8f4ef;--gold:#e8b84a;--ink:#172522;--muted:#667570;--line:#dce5e0;--paper:#fff;--bg:#f3f7f5;--red:#b83a3a;--blue:#2463a6}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px}button,input,select,textarea{font:inherit}button{cursor:pointer}.topbar{background:var(--green);color:#fff;padding:18px 20px}.top-inner{max-width:1200px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:16px}.brand{display:flex;align-items:center;gap:12px}.logo{width:43px;height:43px;border-radius:12px;background:var(--gold);color:var(--green);display:grid;place-items:center;font-weight:900;font-size:20px}.brand h1{font-size:18px;margin:0}.brand p{margin:3px 0 0;color:#c9ded7;font-size:12px}.period{font-size:12px;background:#ffffff18;border:1px solid #ffffff30;padding:8px 11px;border-radius:10px;white-space:nowrap}.wrap{max-width:1200px;margin:22px auto;padding:0 16px}.welcome{background:linear-gradient(115deg,#123c35,#246b5a);color:#fff;border-radius:18px;padding:22px;display:flex;justify-content:space-between;gap:20px;align-items:center}.welcome h2{font-size:23px;margin:0 0 7px}.welcome p{margin:0;color:#d8e9e2;line-height:1.5}.pill{display:inline-block;background:#ffffff1d;border:1px solid #ffffff36;padding:6px 10px;border-radius:99px;font-size:11px;margin-bottom:10px}.student-chip{min-width:190px;background:#ffffff13;border:1px solid #ffffff30;border-radius:14px;padding:13px}.student-chip small{display:block;color:#c9ded7;margin-bottom:5px}.student-chip strong{font-size:15px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:15px 0}.stat{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:15px}.stat span{color:var(--muted);font-size:12px}.stat strong{display:block;font-size:20px;margin-top:4px}.layout{display:grid;grid-template-columns:225px minmax(0,1fr);gap:16px;align-items:start}.side,.panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;overflow:hidden}.side{padding:12px;position:sticky;top:10px}.side-title{font-size:11px;font-weight:800;letter-spacing:.09em;color:var(--muted);padding:8px 9px 10px}.nav{display:flex;align-items:center;gap:10px;width:100%;border:0;background:transparent;text-align:left;padding:10px;border-radius:10px;color:#465650;margin-bottom:3px}.nav .n{width:25px;height:25px;border-radius:8px;background:#edf2ef;display:grid;place-items:center;font-size:11px;font-weight:800;flex-shrink:0}.nav.active{background:var(--mint);color:var(--green);font-weight:750}.nav.active .n{background:var(--green);color:#fff}.nav .label{font-size:12px}.content-head{padding:20px 22px 15px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:start}.content-head h2{margin:0;font-size:20px}.content-head p{margin:5px 0 0;color:var(--muted);font-size:12px;line-height:1.5}.sheet-badge{font-size:11px;background:#f1f5f3;border:1px solid var(--line);padding:6px 9px;border-radius:8px;white-space:nowrap}.panel-body{padding:18px 22px 22px}.notice{background:#fff8e7;border:1px solid #f2dfaa;color:#70541a;border-radius:11px;padding:12px 14px;font-size:12px;line-height:1.55;margin-bottom:15px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.btn{border:1px solid var(--line);background:#fff;border-radius:9px;padding:9px 12px;font-weight:700;color:var(--ink)}.btn.primary{background:var(--green);border-color:var(--green);color:#fff}.btn.gold{background:var(--gold);border-color:var(--gold);color:#26352e}.btn.small{font-size:12px;padding:7px 9px}.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:11px;margin:10px 0 15px}table{border-collapse:collapse;width:100%;min-width:650px;background:#fff}th{background:#f0f5f2;color:#43534c;text-align:left;font-size:11px;letter-spacing:.02em;padding:10px 9px;border-bottom:1px solid var(--line);white-space:nowrap}td{padding:8px 9px;border-bottom:1px solid #edf1ef;vertical-align:top;font-size:12px}tr:last-child td{border-bottom:0}td input,td select{width:100%;min-width:80px;border:1px solid #d9e2dd;border-radius:7px;padding:8px;background:#fff;color:var(--ink)}td input[type=number]{min-width:95px}td .date{min-width:100px}.trans-no{font-weight:800;color:var(--green)}.trans-desc{min-width:250px;line-height:1.45}.muted{color:var(--muted)}.section-title{font-weight:800;font-size:13px;margin:18px 0 8px}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}.field input,.field select{width:100%;padding:11px;border:1px solid var(--line);border-radius:9px;background:#fff}.login{max-width:450px;margin:45px auto;background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px}.login h2{margin:0 0 5px}.login p{color:var(--muted);font-size:13px;line-height:1.5}.login .field{margin:14px 0}.login .btn{width:100%;padding:12px}.bottom-actions{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:16px;margin-top:18px}.scorebox{border-radius:12px;padding:15px;background:var(--mint);border:1px solid #c9e2d7;margin-top:15px}.scorebox h3{margin:0 0 5px}.scorebox p{margin:0;color:#3b5b4f;line-height:1.5}.empty{padding:28px;text-align:center;color:var(--muted)}.footer{text-align:center;padding:22px;color:var(--muted);font-size:11px}.hidden{display:none!important}.hint{font-size:11px;color:var(--muted);line-height:1.5}.tag{font-size:10px;font-weight:800;border-radius:5px;padding:4px 6px;background:#eaf1ed;color:#2a5a49}.debit{color:#17664c;font-weight:800}.credit{color:#245d9d;font-weight:800}
 @media(max-width:760px){.topbar{padding:14px}.top-inner{align-items:flex-start}.brand h1{font-size:15px}.period{font-size:10px;padding:6px}.wrap{margin:14px auto;padding:0 10px}.welcome{padding:17px;display:block}.welcome h2{font-size:20px}.student-chip{margin-top:15px}.stats{gap:7px}.stat{padding:11px}.stat strong{font-size:16px}.stat span{font-size:10px}.layout{grid-template-columns:1fr}.side{position:static;padding:9px}.side-title{padding:4px 6px 8px}.nav-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px}.nav{margin:0;padding:8px;gap:7px}.nav .label{font-size:11px}.nav .n{width:23px;height:23px}.content-head{padding:16px}.content-head h2{font-size:18px}.panel-body{padding:14px}.form-grid{grid-template-columns:1fr}.period{max-width:120px;white-space:normal;text-align:center}.table-wrap{margin-left:-2px;margin-right:-2px}td input,td select{padding:9px}.bottom-actions .btn{flex:1}.side-title{font-size:10px}}
-table.sales-journal{min-width:1100px}table.sales-journal th{white-space:nowrap;text-align:center}table.sales-journal td:nth-child(3) input{min-width:220px}table.sales-recap{min-width:520px}.sj-foot td{font-weight:700;background:#f4f7f5}.sj-foot td:first-child{text-align:right}.sales-journal .c-d,.sales-recap .c-d,.sj-foot td.c-d{background:#e3eefb}.sales-journal .c-k,.sales-recap .c-k,.sj-foot td.c-k{background:#fdeaea}.sales-journal th.c-d,.sales-recap th.c-d{background:#c9ddf6;color:#1b4f8a}.sales-journal th.c-k,.sales-recap th.c-k{background:#f7cfcf;color:#9c2f2f}.c-d input{background:#f6faff!important;border-color:#a9c6ea!important}.c-k input{background:#fff8f8!important;border-color:#eab3b3!important}.sales-journal td.c-d,.sales-recap td.c-d{border-left:2px solid #a9c6ea}.sales-journal td.c-k:nth-child(6),.sales-recap td.c-k:first-of-type{border-left:2px solid #eab3b3}.pj td.c-k{border-left:2px solid #eab3b3}.pj th{white-space:normal!important}input[data-num]{text-align:right;min-width:95px}table.cj{min-width:1750px}.cj td.c-d select{background:#f6faff;border-color:#a9c6ea}.cj td select{min-width:170px}.cj td.c-k select{background:#fff8f8;border-color:#eab3b3}table.gj{min-width:820px}table.gj td:nth-child(3) input{min-width:260px}.gj td.c-d,.gj td.c-k{border-left:2px solid #a9c6ea}.gj td.c-k{border-left-color:#eab3b3}table.fx td input,table.fx td select{min-width:0!important}table.fx th{white-space:normal!important;word-break:break-word}table.fx td input[data-num]{text-align:right}.sl-head{display:flex;justify-content:space-between;gap:12px;font-size:13px;margin:14px 2px 2px}table.sl th:nth-child(n+6){background:#eef2f0}table.sl th.c-d{background:#c9ddf6}table.sl th.c-k{background:#f7cfcf}.sales-journal .c-b,.sj-foot td.c-b{background:#e6f4ea}.sales-journal th.c-b{background:#c5e6cf;color:#1d5a35}.c-b input{background:#f5fbf7!important;border-color:#a8d4b7!important}.ic td.c-d:nth-child(4),.ic td.c-k:nth-child(7),.ic td.c-b:nth-child(10){border-left:2px solid #9aa9a3}table.tbs td{text-align:left;padding:8px 10px}table.tbs td.num{text-align:right;font-variant-numeric:tabular-nums}.tbs td.c-d{border-left:2px solid #a9c6ea}.tbs td.c-k{border-left:2px solid #eab3b3}.key-lock{display:flex;flex-direction:column;gap:10px;max-width:360px}.key-lock input{border:1px solid var(--line);border-radius:9px;padding:12px;font-size:16px}.key-err{color:var(--red);font-weight:700;min-height:1.2em;margin:0}.key-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px}.chip{border:1px solid var(--line);background:#fff;border-radius:999px;min-width:42px;padding:8px 12px;font-weight:700;color:var(--ink)}.chip.on{background:var(--green);border-color:var(--green);color:#fff}#keyView{border:0;padding:0;margin:0;min-width:0}#keyView input:disabled,#keyView select:disabled{color:#172522;-webkit-text-fill-color:#172522;opacity:1}.step-box{background:#f4faf7;border:1px solid #bfe0d1;border-radius:12px;padding:14px;margin:12px 0}.step-box.compact{padding:10px 12px}.pbar{height:7px;background:#dcebe4;border-radius:99px;overflow:hidden;margin-bottom:10px}.pbar i{display:block;height:100%;background:var(--green);border-radius:99px}.step-head{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.step-pill{background:var(--green);color:#fff;border-radius:99px;padding:3px 10px;font-size:12px;font-weight:700}.step-pill.ok{background:#2f9e63}.step-date{font-weight:800}.step-desc{margin:8px 0 4px;line-height:1.5}.step-hint{margin:2px 0 10px;font-size:12.5px;color:var(--muted)}.step-box.compact .step-hint{display:none}.step-actions .btn{width:100%}.step-res{margin-top:10px;border-radius:10px;padding:10px 12px;font-size:13.5px;line-height:1.5}.step-res ul{margin:6px 0 0;padding-left:18px}.step-res.bad{background:#fdeaea;border:1px solid #eab3b3}.step-res.ok{background:#e3f6ea;border:1px solid #a8d4b7}.step-done{margin-top:10px;font-size:13px}.step-done div{padding:3px 0}.zro{background:#eef2f0!important;color:#6b7c74!important}.hint a{color:var(--green,#1f7a57);font-weight:700}</style></head><body>
+table.sales-journal{min-width:1100px}table.sales-journal th{white-space:nowrap;text-align:center}table.sales-journal td:nth-child(3) input{min-width:220px}table.sales-recap{min-width:520px}.sj-foot td{font-weight:700;background:#f4f7f5}.sj-foot td:first-child{text-align:right}.sales-journal .c-d,.sales-recap .c-d,.sj-foot td.c-d{background:#e3eefb}.sales-journal .c-k,.sales-recap .c-k,.sj-foot td.c-k{background:#fdeaea}.sales-journal th.c-d,.sales-recap th.c-d{background:#c9ddf6;color:#1b4f8a}.sales-journal th.c-k,.sales-recap th.c-k{background:#f7cfcf;color:#9c2f2f}.c-d input{background:#f6faff!important;border-color:#a9c6ea!important}.c-k input{background:#fff8f8!important;border-color:#eab3b3!important}.sales-journal td.c-d,.sales-recap td.c-d{border-left:2px solid #a9c6ea}.sales-journal td.c-k:nth-child(6),.sales-recap td.c-k:first-of-type{border-left:2px solid #eab3b3}.pj td.c-k{border-left:2px solid #eab3b3}.pj th{white-space:normal!important}input[data-num]{text-align:right;min-width:95px}table.cj{min-width:1750px}.cj td.c-d select{background:#f6faff;border-color:#a9c6ea}.cj td select{min-width:170px}.cj td.c-k select{background:#fff8f8;border-color:#eab3b3}table.gj{min-width:820px}table.gj td:nth-child(3) input{min-width:260px}.gj td.c-d,.gj td.c-k{border-left:2px solid #a9c6ea}.gj td.c-k{border-left-color:#eab3b3}table.fx td input,table.fx td select{min-width:0!important}table.fx th{white-space:normal!important;word-break:break-word}table.fx td input[data-num]{text-align:right}.sl-head{display:flex;justify-content:space-between;gap:12px;font-size:13px;margin:14px 2px 2px}table.sl th:nth-child(n+6){background:#eef2f0}table.sl th.c-d{background:#c9ddf6}table.sl th.c-k{background:#f7cfcf}.sales-journal .c-b,.sj-foot td.c-b{background:#e6f4ea}.sales-journal th.c-b{background:#c5e6cf;color:#1d5a35}.c-b input{background:#f5fbf7!important;border-color:#a8d4b7!important}.ic td.c-d:nth-child(4),.ic td.c-k:nth-child(7),.ic td.c-b:nth-child(10){border-left:2px solid #9aa9a3}table.tbs td{text-align:left;padding:8px 10px}table.tbs td.num{text-align:right;font-variant-numeric:tabular-nums}.tbs td.c-d{border-left:2px solid #a9c6ea}.tbs td.c-k{border-left:2px solid #eab3b3}.key-lock{display:flex;flex-direction:column;gap:10px;max-width:360px}.key-lock input{border:1px solid var(--line);border-radius:9px;padding:12px;font-size:16px}.key-err{color:var(--red);font-weight:700;min-height:1.2em;margin:0}.key-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px}.chip{border:1px solid var(--line);background:#fff;border-radius:999px;min-width:42px;padding:8px 12px;font-weight:700;color:var(--ink)}.chip.on{background:var(--green);border-color:var(--green);color:#fff}#keyView{border:0;padding:0;margin:0;min-width:0}#keyView input:disabled,#keyView select:disabled{color:#172522;-webkit-text-fill-color:#172522;opacity:1}.step-box{background:#f4faf7;border:1px solid #bfe0d1;border-radius:12px;padding:14px;margin:12px 0}.step-box.compact{padding:10px 12px}.pbar{height:7px;background:#dcebe4;border-radius:99px;overflow:hidden;margin-bottom:10px}.pbar i{display:block;height:100%;background:var(--green);border-radius:99px}.step-head{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.step-pill{background:var(--green);color:#fff;border-radius:99px;padding:3px 10px;font-size:12px;font-weight:700}.step-pill.ok{background:#2f9e63}.step-date{font-weight:800}.step-desc{margin:8px 0 4px;line-height:1.5}.step-hint{margin:2px 0 10px;font-size:12.5px;color:var(--muted)}.step-box.compact .step-hint{display:none}.step-actions .btn{width:100%}.step-res{margin-top:10px;border-radius:10px;padding:10px 12px;font-size:13.5px;line-height:1.5}.step-res ul{margin:6px 0 0;padding-left:18px}.step-res.bad{background:#fdeaea;border:1px solid #eab3b3}.step-res.ok{background:#e3f6ea;border:1px solid #a8d4b7}.step-done{margin-top:10px;font-size:13px}.step-done div{padding:3px 0}.zro{background:#eef2f0!important;color:#6b7c74!important}.hint a{color:var(--green,#1f7a57);font-weight:700}
+body.nologin .topbar,body.nologin .wrap{display:none}
+#gxLogin{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--bg)}
+.gx-card{width:100%;max-width:430px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px;box-shadow:0 10px 30px #123c3514}
+.gx-card .gx-logo{width:52px;height:52px;border-radius:14px;background:var(--gold);color:var(--green);display:grid;place-items:center;font-weight:900;font-size:23px;margin:0 auto 12px}
+.gx-card h2{margin:0 0 4px;text-align:center;font-size:19px;color:var(--green)}.gx-card>p{text-align:center;margin:0 0 16px}
+.gx-card .field{margin-bottom:12px}.gx-card .field input,.gx-card .field select{width:100%;border:1.5px solid #c8d6ce;border-radius:10px;padding:12px;font-size:16px;background:#fff}
+.gx-card .btn.primary{width:100%;padding:13px;font-size:15px}
+.gx-card .rules{margin-top:16px;background:#fff8e7;border:1px solid #f2dfaa;border-radius:11px;padding:12px 14px;font-size:12px;color:#70541a;line-height:1.55}.gx-card .rules ul{margin:6px 0 0;padding-left:18px}
+.gx-t{margin-top:16px;font-size:12.5px;color:var(--muted)}.gx-t summary{cursor:pointer}
+#gxDone{position:fixed;top:0;left:0;right:0;bottom:0;z-index:9500;background:#0f2e2ae6;display:none;align-items:center;justify-content:center;padding:22px;text-align:center;color:#fff}#gxDone.on{display:flex}
+#gxDone .gx-box{max-width:420px;width:100%;background:#123c35;border:1px solid #ffffff30;border-radius:18px;padding:26px}#gxDone .gx-box div.ic{font-size:52px}#gxDone h2{margin:10px 0 6px}#gxDone p{color:#d7e7e2;line-height:1.5;margin:6px 0 16px}
+#gxDone button{width:100%;padding:13px;border:0;border-radius:12px;background:var(--gold);color:#2b2208;font-weight:800;font-size:15px}
+#gdOverlay{position:fixed;top:0;left:0;right:0;bottom:0;z-index:99999;background:#0f2e2a;color:#fff;display:none;align-items:center;justify-content:center;padding:22px;text-align:center}#gdOverlay.on{display:flex}.gd-box{max-width:430px;width:100%}.gd-ic{font-size:54px;line-height:1}.gd-box h2{margin:12px 0 8px;font-size:23px}.gd-box p{margin:6px 0;line-height:1.5;color:#d7e7e2;font-size:14.5px}#gdBack{margin-top:16px;width:100%;padding:13px;border:0;border-radius:12px;background:#e6b84a;color:#2b2208;font-weight:700;font-size:15px}#gdBack:disabled{opacity:.55}.gd-t{margin-top:18px;font-size:12.5px;color:#9fb9b2}.gd-t summary{cursor:pointer}.gd-t input{margin-top:8px;padding:9px;border-radius:8px;border:0;width:62%}.gd-t button{margin-left:6px;padding:9px 12px;border:0;border-radius:8px;font-weight:700}#gdErr{margin-top:6px;color:#ffb4b4}
+#gdBadge{position:fixed;left:10px;bottom:10px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:9000;background:#123c35;color:#fff;font:600 11px system-ui,sans-serif;padding:6px 11px;border-radius:999px;display:none;opacity:.92}
+.gd-ios{margin-top:10px;padding:10px 12px;border-radius:10px;background:#fff6dc;color:#5a4300;font-size:12.5px;line-height:1.55;text-align:left}
+@supports (-webkit-touch-callout:none){input,select,textarea{font-size:16px!important}}
+body.gd-on{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}body.gd-on input,body.gd-on select{-webkit-user-select:text;user-select:text}
+</style><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script></head><body class="nologin">
+<div id="gxLogin"><div class="gx-card"><div class="gx-logo">LM</div><h2>Belajar Transaksi Perusahaan Dagang</h2><p class="hint">UD Lestari Makmur · latihan per jenis transaksi</p>
+<div class="field"><label>Nama lengkap</label><input id="gxName" placeholder="Contoh: Siti Nurhaliza" autocomplete="off" onkeydown="if(event.key==='Enter')gxLogin()"></div>
+<div class="field"><label>Kelas</label><select id="gxClass"><option value="XII AK" selected>XII AK</option></select></div>
+<button class="btn primary" onclick="gxLogin()">Mulai belajar</button>
+<div class="rules"><b>Sebelum mulai</b><ul><li>Isi nama sesuai absen. Progres tersimpan atas nama ini di perangkat dan browser ini.</li><li><b>Mode aman:</b> sesi berjalan layar penuh. Keluar dari layar, pindah tab/aplikasi, atau membuka jendela lain akan mengunci layar dan dicatat. Pelanggaran ke-3 mengakhiri sesi dan progres dikumpulkan.</li><li>Halaman <b>progres akhir</b> muncul saat semua 60 soal benar, atau saat kamu menekan <b>Akhiri sesi</b>. Hasilnya bisa diunduh sebagai PDF atau TXT.</li></ul></div></div></div>
+<div id="gxDone"><div class="gx-box"><div class="ic">🎉</div><h2>Semua soal sudah benar!</h2><p>Hebat, <b id="gxDoneName"></b>! Seluruh 60 soal sudah kamu selesaikan. Tekan tombol di bawah untuk melihat halaman progres akhir.</p><button onclick="gxFinish('semua')">Lihat progres akhir</button></div></div>
+
 <header class="topbar"><div class="top-inner"><div class="brand"><div class="logo">LM</div><div><h1>Belajar Transaksi Perusahaan Dagang</h1><p>UD Lestari Makmur · latihan per jenis transaksi</p></div></div><div class="period">12 MATERI<br><strong>60 SOAL</strong></div></div></header>
 <main class="wrap"><section class="panel"><div id="sheetHeader" class="content-head"></div><div id="sheetBody" class="panel-body"></div></section></main>
 <script>
@@ -167,16 +192,16 @@ h=h.replace(/<div class="notice">[\s\S]*?<\/div>/,"").replace(/<tr class="sj-foo
 function mount(el,sk,sc,A,ro){el.innerHTML=sheetHTML(sk,sc,A);const s=sc.off[sk],keep=s+sc.sh[sk].r.length+1;el.querySelectorAll("table tbody").forEach(tb=>[...tb.querySelectorAll("tr")].forEach((tr,i)=>{if(i>=keep)tr.remove()}));
 el.querySelectorAll("[data-key]").forEach(e=>{const m=e.dataset.key.match(/_(\d+)_/);if(ro||(m&&+m[1]<s)){e.disabled=true;e.classList.add("zro")}})}
 /* ---------- penyimpanan & status ---------- */
-let ST=JSON.parse(localStorage.getItem("belajarLM2")||"{}");ST.p=ST.p||{};ST.a=ST.a||{};ST.v=ST.v||{};
-const save=()=>{try{localStorage.setItem("belajarLM2",JSON.stringify(ST))}catch(e){}},key=(m,i)=>m+"_"+i,vr=m=>ST.v["m"+m]||0,akey=m=>m+"_"+vr(m);
+let ST={p:{},a:{},v:{},g:{viol:0,log:[]}};
+const save=()=>{try{localStorage.setItem(gxKey(),JSON.stringify(ST))}catch(e){}},key=(m,i)=>m+"_"+i,vr=m=>ST.v["m"+m]||0,akey=m=>m+"_"+vr(m);
 let V={home:true,m:null,i:null,tab:0,chk:null,pem:false};
 const status=(m,i)=>{const p=ST.p[key(m,i)];return p?(p.ok?"ok":"try"):""},esc2=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const cur=()=>{const ch=chain(V.m,vr(V.m));return{ch,sc:ch.cs[V.i],UA:ST.a[akey(V.m)]=ST.a[akey(V.m)]||{}}};
 function header(t,s,tag){$("#sheetHeader").innerHTML=`<div><h2>${t}</h2><p>${s}</p></div><span class="tag">${tag}</span>`}
 function home(){const tot=MAT.length*5,ok=MAT.reduce((a,_,m)=>a+[0,1,2,3,4].filter(i=>status(m,i)==="ok").length,0),grp=[...new Set(MAT.map(x=>x[2]))];header("Pilih materi",`${ok} dari ${tot} soal sudah benar`,"BELAJAR");
-return`<div class="notice">Tiap materi punya 5 soal berurutan. Lembar kerja dilanjutkan dari soal ke soal (baris sebelumnya tetap terlihat), dan hanya lembar yang terpengaruh transaksi yang ditampilkan.<details style="margin-top:8px"><summary><b>Aturan yang dipakai di semua soal</b></summary><ul><li>PPN 11%. Persediaan perpetual FIFO.</li><li>Termin 2/10, n/30: potongan 2% bila dibayar dalam 10 hari sejak tanggal faktur (hari faktur = hari ke-0; hari ke-10 masih berlaku), selebihnya bayar penuh paling lambat hari ke-30.</li><li>Potongan hanya untuk pelunasan penuh, dihitung dari total faktur (termasuk PPN bila ada).</li><li>Pengeluaran sampai ${rp(LIMIT)} dari kas kecil; di atasnya lewat bank (Jurnal Pengeluaran Kas).</li><li>HPP, retur, dan koreksi dicatat di Jurnal Umum. Tulis tanggal format dd/mm/yyyy dan pilih No. Bukti serta Ref sesuai soal.</li><li>Total, nomor akun, dan rekapitulasi akhir bulan tidak diisi di latihan ini.</li></ul></details></div><div class="bottom-actions" style="margin:0 0 10px"><button class="btn" onclick="openTB()">📒 Neraca Saldo (nomor akun)</button><button class="btn" onclick="openKunci()">🔐 Kunci Jawaban</button></div>
+return`<div class="notice">Tiap materi punya 5 soal berurutan. Lembar kerja dilanjutkan dari soal ke soal (baris sebelumnya tetap terlihat), dan hanya lembar yang terpengaruh transaksi yang ditampilkan.<details style="margin-top:8px"><summary><b>Aturan yang dipakai di semua soal</b></summary><ul><li>PPN 11%. Persediaan perpetual FIFO.</li><li>Termin 2/10, n/30: potongan 2% bila dibayar dalam 10 hari sejak tanggal faktur (hari faktur = hari ke-0; hari ke-10 masih berlaku), selebihnya bayar penuh paling lambat hari ke-30.</li><li>Potongan hanya untuk pelunasan penuh, dihitung dari total faktur (termasuk PPN bila ada).</li><li>Pengeluaran sampai ${rp(LIMIT)} dari kas kecil; di atasnya lewat bank (Jurnal Pengeluaran Kas).</li><li>HPP, retur, dan koreksi dicatat di Jurnal Umum. Tulis tanggal format dd/mm/yyyy dan pilih No. Bukti serta Ref sesuai soal.</li><li>Total, nomor akun, dan rekapitulasi akhir bulan tidak diisi di latihan ini.</li></ul></details></div><div class="bottom-actions" style="margin:0 0 10px"><button class="btn" onclick="openTB()">📒 Neraca Saldo (nomor akun)</button><button class="btn" onclick="openKunci()">🔐 Kunci Jawaban</button><button class="btn" onclick="gxProg()">📊 Lihat progres</button></div>
 ${grp.map(g=>`<div class="section-title">${g}</div><div class="nav-list">${MAT.map((x,m)=>x[2]===g?`<button class="nav" onclick="openM(${m})"><span class="n">${x[0]}</span><span class="label">${x[1]} (${[0,1,2,3,4].filter(i=>status(m,i)==="ok").length}/5)</span></button>`:"").join("")}</div>`).join("")}
-<p class="hint" style="text-align:center;margin-top:16px"><a href="#" onclick="if(confirm('Hapus semua progres dan jawaban?')){ST={p:{},a:{},v:{}};save();render()}return false">Hapus progres</a></p>`}
+<p class="hint" style="text-align:center;margin-top:16px"><a href="#" onclick="if(confirm('Hapus semua progres dan jawaban?')){ST={p:{},a:{},v:{},g:ST.g,t0:ST.t0};save();render()}return false">Hapus progres</a></p>`}
 function materi(m){const x=MAT[m],ch=chain(m,vr(m));header(x[0]+" "+x[1],"Baca ringkasan, lalu kerjakan soal berurutan","MATERI");return`<div class="bottom-actions" style="margin:0 0 10px"><button class="btn" onclick="goHome()">← Semua materi</button><button class="btn" onclick="newNum(${m})">🔀 Angka baru</button></div><div class="notice"><ul>${x[3].map(t=>`<li>${t}</li>`).join("")}</ul></div><div class="section-title">Soal latihan</div><div class="nav-list">${ch.cs.map((sc,i)=>{const s=status(m,i);return`<button class="nav" onclick="openS(${m},${i})"><span class="n">${s==="ok"?"✓":i+1}</span><span class="label"><b>Soal ${i+1}</b> · ${esc2(sc.lbl)}<br><small>Lembar: ${sc.ord.map(k=>CFG[k].n).join(", ")}</small></span></button>`}).join("")}</div>`}
 function soal(){const{m,i}=V,{sc}=cur(),c=V.chk,allok=c&&sc.ord.every(k=>!c[k].length);header(`${MAT[m][1]} · Soal ${i+1}`,esc2(sc.lbl),c?(allok?"✓ BENAR":"PERIKSA LAGI"):"SOAL "+(i+1)+"/5");
 return`<div class="bottom-actions" style="margin:0 0 10px"><button class="btn" onclick="openM(${m})">← ${MAT[m][1]}</button><button class="btn" onclick="openTB()">📒 Nomor akun</button></div>
@@ -188,7 +213,7 @@ ${c?(allok?`<div class="step-res ok"><b>🎉 Benar semua!</b> Semua lembar sudah
 ${V.pem?`<div class="step-box" style="margin-top:12px"><div class="step-head"><b>Pembahasan</b></div><ol>${sc.steps.map(s=>`<li>${esc2(s)}</li>`).join("")}</ol><p class="step-hint">Jawaban benar tiap lembar sampai soal ini (tabel yang sama, terisi):</p><div id="zkey"></div></div>`:""}
 <div class="bottom-actions" style="margin-top:12px"><button class="btn" onclick="again()">↺ Ulangi soal ini</button></div>
 <div class="bottom-actions"><button class="btn" ${i?"":"disabled"} onclick="openS(${m},${i-1})">← Soal ${i}</button>${i<4?`<button class="btn primary" onclick="openS(${m},${i+1})">Soal ${i+2} →</button>`:`<button class="btn gold" onclick="openM(${m})">Selesai materi ✓</button>`}</div>`}
-function render(keep){const y=window.scrollY;if(V.tb){tbView();window.scrollTo(0,0);return}if(V.kunci){kunciView();window.scrollTo(0,keep?y:0);return}$("#sheetBody").innerHTML=V.home?home():V.i==null?materi(V.m):soal();if(V.i!=null&&!V.home){const{ch,sc,UA}=cur();mount($("#zsheet"),sc.ord[V.tab],sc,Object.assign(prefAns(ch.pref),UA),false);if(V.pem){const z=$("#zkey"),EA=expAns(ch,V.i);z.innerHTML=sc.ord.map((k,n)=>`<details><summary>${CFG[k].n}</summary><div id="zk${n}"></div></details>`).join("");sc.ord.forEach((k,n)=>mount($("#zk"+n),k,sc,EA,true))}}window.scrollTo(0,keep?y:0)}
+function render(keep){const y=window.scrollY;if(V.prog||ST.fin){progView();window.scrollTo(0,0);return}if(V.tb){tbView();window.scrollTo(0,0);return}if(V.kunci){kunciView();window.scrollTo(0,keep?y:0);return}$("#sheetBody").innerHTML=V.home?home():V.i==null?materi(V.m):soal();if(V.i!=null&&!V.home){const{ch,sc,UA}=cur();mount($("#zsheet"),sc.ord[V.tab],sc,Object.assign(prefAns(ch.pref),UA),false);if(V.pem){const z=$("#zkey"),EA=expAns(ch,V.i);z.innerHTML=sc.ord.map((k,n)=>`<details><summary>${CFG[k].n}</summary><div id="zk${n}"></div></details>`).join("");sc.ord.forEach((k,n)=>mount($("#zk"+n),k,sc,EA,true))}}window.scrollTo(0,keep?y:0)}
 function goHome(){V={home:true,m:null,i:null,tab:0,chk:null,pem:false};render()}
 function openM(m){V={home:false,m,i:null,tab:0,chk:null,pem:false};render()}
 function openS(m,i){V={home:false,m,i,tab:0,chk:null,pem:false};render()}
@@ -216,6 +241,227 @@ b.innerHTML=`<div class="bottom-actions" style="margin:0 0 10px"><button class="
 <div class="section-title">Jawaban benar (kumulatif sampai soal ini)</div>${sc.ord.map((k,n)=>`<details open><summary>${CFG[k].n}</summary><div id="kz${n}"></div></details>`).join("")}`;
 sc.ord.forEach((k,n)=>mount($("#kz"+n),k,sc,EA,true))}
 
-render();
+
+/* ===== LOGIN + PROGRES AKHIR + MODE UJIAN AMAN ===== */
+let ME={};
+const GX_URL="";   /* opsional: alamat Google Apps Script untuk menerima progres */
+const gxKey=()=>ME.name?"belajarLM2_"+ME.name.trim().toLowerCase().replace(/\s+/g," ")+"_"+ME.cls:null;
+const gxFmt=iso=>{try{return iso?new Date(iso).toLocaleString("id-ID"):"-"}catch(e){return "-"}};
+const gxById=id=>document.getElementById(id);
+function gxStat(){
+ const per=MAT.map((x,m)=>{const ids=[0,1,2,3,4];return{code:x[0],name:x[1],ok:ids.filter(i=>status(m,i)==="ok").length,tr:ids.filter(i=>ST.p[key(m,i)]).length,tries:ids.reduce((a,i)=>a+((ST.p[key(m,i)]||{}).tries||0),0)}});
+ return{per,tot:MAT.length*5,ok:per.reduce((a,p)=>a+p.ok,0),tr:per.reduce((a,p)=>a+p.tr,0),tries:per.reduce((a,p)=>a+p.tries,0)};
+}
+function gxStatusTxt(){
+ const f=ST.fin;
+ if(!f)return"Sesi masih berjalan";
+ if(f.type==="semua")return"Selesai: semua soal sudah benar";
+ if(f.type==="auto")return"Sesi diakhiri otomatis karena pelanggaran layar mencapai "+(window.gdMax||3)+" kali";
+ return"Sesi diakhiri oleh siswa";
+}
+function gxLines(){
+ const S=gxStat(),g=ST.g||{},pct=Math.round(S.ok/S.tot*100),L=[];
+ L.push("LAPORAN PROGRES BELAJAR","Belajar Transaksi Perusahaan Dagang - UD Lestari Makmur","SMK Ma'arif 1 Semaka","");
+ L.push("Nama    : "+ME.name,"Kelas   : "+ME.cls,"Status  : "+gxStatusTxt(),"Mulai   : "+gxFmt(ST.t0),"Selesai : "+(ST.fin?gxFmt(ST.fin.t):"-"),"");
+ L.push("RINGKASAN","Soal benar        : "+S.ok+" / "+S.tot+" ("+pct+"%)","Soal dicoba       : "+S.tr+" / "+S.tot,"Total percobaan   : "+S.tries,"Pelanggaran layar : "+(g.viol||0)+" kali");
+ (g.log||[]).forEach(x=>L.push("   - "+x));
+ L.push("","PROGRES PER MATERI");
+ S.per.forEach(p=>L.push(p.code+" "+p.name+" : "+p.ok+"/5 benar, dicoba "+p.tr+"/5, percobaan "+p.tries+"x"));
+ return L;
+}
+function gxTXT(){
+ const t=gxLines().join("\r\n"),a=document.createElement("a");
+ a.href=URL.createObjectURL(new Blob([t],{type:"text/plain;charset=utf-8"}));
+ a.download="progres_"+(ME.name+"_"+ME.cls).replace(/[^A-Za-z0-9]+/g,"_")+".txt";
+ document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);
+}
+function gxPDF(){
+ if(!window.jspdf){alert("Fitur PDF memerlukan koneksi internet. Unduh TXT, atau coba lagi saat online.");gxTXT();return}
+ const{jsPDF}=window.jspdf,doc=new jsPDF({unit:"mm",format:"a4"}),M=15,W=180;let y=18;
+ gxLines().forEach((ln,i)=>{const head=i===0;doc.setFont("helvetica",head?"bold":"normal");doc.setFontSize(head?14:10);
+  doc.splitTextToSize(ln||" ",W).forEach(p=>{if(y>282){doc.addPage();y=18}doc.text(p,M,y);y+=head?8:5.2})});
+ doc.save("progres_"+(ME.name+"_"+ME.cls).replace(/[^A-Za-z0-9]+/g,"_")+".pdf");
+}
+function gxSend(){
+ if(!GX_URL)return;
+ try{const S=gxStat();fetch(GX_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({latihan:"Belajar Transaksi Perusahaan Dagang",name:ME.name,className:ME.cls,status:gxStatusTxt(),benar:S.ok,total:S.tot,percobaan:S.tries,pelanggaran:(ST.g||{}).viol||0,log:(ST.g||{}).log||[],mulai:ST.t0,selesai:ST.fin&&ST.fin.t})})}catch(e){}
+}
+function gxProg(){V={prog:true,home:false,m:null,i:null,tab:0,chk:null,pem:false};render()}
+function gxEnd(){if(confirm("Akhiri sesi dan kumpulkan progres? Setelah diakhiri, sesi tidak dapat dilanjutkan tanpa izin guru."))gxFinish("manual")}
+function gxFinish(type){
+ if(ST.fin)return;
+ ST.fin={t:new Date().toISOString(),type};save();
+ if(window.gdStop)window.gdStop();
+ const d=gxById("gxDone");if(d)d.classList.remove("on");
+ V={prog:true,home:false,m:null,i:null,tab:0,chk:null,pem:false};render();gxSend();
+}
+function gxCheckDone(){const S=gxStat();if(!ST.fin&&S.ok>=S.tot){const d=gxById("gxDone");if(d){gxById("gxDoneName").textContent=ME.name;d.classList.add("on")}}}
+function gxReopen(){
+ const pw=gxById("gxPw").value.trim(),er=gxById("gxPwErr");
+ if(!pw){er.textContent="Masukkan password guru.";return}
+ if(cyrb(pw,11)!==KEYH){er.textContent="Password salah.";return}
+ delete ST.fin;ST.g=ST.g||{};ST.g.viol=0;(ST.g.log=ST.g.log||[]).push(new Date().toLocaleTimeString("id-ID")+" sesi dibuka kembali oleh guru");
+ save();V={home:true,m:null,i:null,tab:0,chk:null,pem:false};render();if(window.gdStart)window.gdStart();
+}
+function progView(){
+ const S=gxStat(),pct=Math.round(S.ok/S.tot*100),f=ST.fin,g=ST.g||{};
+ header("Progres belajar",esc2(ME.name)+" · "+esc2(ME.cls),f?"SELESAI":"PROGRES");
+ $("#sheetBody").innerHTML=`<div class="welcome" style="margin-bottom:14px"><div><span class="pill">${f?"HASIL AKHIR":"PROGRES SAAT INI"}</span><h2>${esc2(ME.name)}</h2><p>${esc2(ME.cls)} · ${esc2(gxStatusTxt())}</p></div><div class="student-chip"><small>Soal benar</small><strong>${S.ok} / ${S.tot} (${pct}%)</strong></div></div>
+<div class="stats"><div class="stat"><span>Soal benar</span><strong>${S.ok}/${S.tot}</strong></div><div class="stat"><span>Sudah dicoba</span><strong>${S.tr}/${S.tot}</strong></div><div class="stat"><span>Total percobaan</span><strong>${S.tries}</strong></div></div>
+<div class="section-title">Progres per materi</div>
+${S.per.map(p=>`<div style="margin:0 0 11px"><div style="display:flex;justify-content:space-between;gap:8px;font-size:12.5px"><span><b>${esc2(p.code)}</b> ${esc2(p.name)}</span><span>${p.ok}/5 benar · ${p.tries}x coba</span></div><div class="pbar" style="margin:5px 0 0"><i style="width:${p.ok*20}%"></i></div></div>`).join("")}
+<div class="section-title">Informasi sesi</div>
+<div class="notice">Mulai: ${esc2(gxFmt(ST.t0))}<br>Selesai: ${f?esc2(gxFmt(f.t)):"-"}<br>Pelanggaran layar: <b>${g.viol||0}</b> kali${(g.log&&g.log.length)?"<br><small>"+g.log.map(esc2).join("<br>")+"</small>":""}</div>
+<div class="bottom-actions" style="margin-top:6px">${f?"":`<button class="btn" onclick="goHome()">← Kembali belajar</button><button class="btn gold" onclick="gxEnd()">Akhiri sesi &amp; kumpulkan progres</button>`}<button class="btn primary" onclick="gxPDF()">⬇ Unduh PDF</button><button class="btn" onclick="gxTXT()">⬇ Unduh TXT</button></div>
+${f?`<details class="gx-t"><summary>Guru: buka kembali sesi</summary><div class="key-lock" style="margin-top:8px"><input id="gxPw" type="password" autocomplete="off" placeholder="Password guru"><button class="btn" onclick="gxReopen()">Buka kembali sesi</button><p id="gxPwErr" class="key-err"></p></div></details>`:""}`;
+}
+function gxLogin(){
+ const n=gxById("gxName").value.trim().replace(/\s+/g," "),c=gxById("gxClass").value;
+ if(n.length<3){alert("Isi nama lengkap sesuai absen.");return}
+ if(!c){alert("Pilih kelas.");return}
+ ME={name:n,cls:c};
+ let raw=null;
+ try{raw=localStorage.getItem(gxKey());if(!raw){const old=localStorage.getItem("belajarLM2");if(old){raw=old;localStorage.setItem(gxKey(),old);localStorage.removeItem("belajarLM2")}}}catch(e){}
+ try{ST=JSON.parse(raw||"{}")}catch(e){ST={}}
+ ST.p=ST.p||{};ST.a=ST.a||{};ST.v=ST.v||{};ST.g=ST.g||{viol:0,log:[]};if(!ST.t0)ST.t0=new Date().toISOString();save();
+ document.body.classList.remove("nologin");gxById("gxLogin").style.display="none";
+ const bp=document.querySelector(".brand p");if(bp)bp.textContent="UD Lestari Makmur · "+n+" ("+c+")";
+ V={home:true,m:null,i:null,tab:0,chk:null,pem:false};render();
+ if(!ST.fin&&window.gdStart)window.gdStart();
+}
+const _gxDoCheck=doCheck;
+doCheck=function(){_gxDoCheck.apply(this,arguments);gxCheckDone()};
+
+/* ---------- MODE UJIAN AMAN: layar penuh + deteksi keluar + kunci layar ----------
+   Pengaturan guru: GUARD_ON (true/false), MAX_VIOLATION (batas pelanggaran), LOCK_SECONDS (jeda tombol kembali) */
+(function(){
+const GUARD_ON=true,MAX_VIOLATION=3,LOCK_SECONDS=5,GRACE_MS=2000;
+window.gdMax=MAX_VIOLATION;
+if(!GUARD_ON){window.gdStart=function(){};window.gdStop=function(){};return}
+let active=false,locked=false,ended=false,built=false,hooked=false,pushed=false,lockedAt=0,lastEv=0,ignoreUntil=0,busy=0,wasFs=false,wl=null,timer=null,vid=null,rz=null;
+const root=document.documentElement,$g=id=>document.getElementById(id),G=()=>ST.g||(ST.g={viol:0,log:[]});
+const UA=navigator.userAgent||"",isIOS=/iPad|iPhone|iPod/.test(UA)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+const fsSupported=!!(root.requestFullscreen||root.webkitRequestFullscreen)&&document.fullscreenEnabled!==false&&document.webkitFullscreenEnabled!==false;
+const isFs=()=>!!(document.fullscreenElement||document.webkitFullscreenElement);
+const clock=()=>new Date().toLocaleTimeString("id-ID");
+function build(){
+ if(built)return;built=true;
+ const ov=document.createElement("div");ov.id="gdOverlay";
+ ov.innerHTML='<div class="gd-box"><div class="gd-ic">🔒</div><h2 id="gdTitle"></h2><p id="gdWhy"></p><p id="gdCnt"></p><button id="gdBack" type="button"></button><details class="gd-t" id="gdTeacher"><summary>Guru: buka kunci</summary><input id="gdPass" type="password" placeholder="Password guru"><button id="gdUnlock" type="button">Buka</button><div id="gdErr"></div></details></div>';
+ document.body.appendChild(ov);
+ const bd=document.createElement("div");bd.id="gdBadge";document.body.appendChild(bd);
+ $g("gdBack").addEventListener("click",back);$g("gdUnlock").addEventListener("click",teacherUnlock);
+}
+function updBadge(){const b=$g("gdBadge");if(b)b.textContent="🔒 Mode ujian · pelanggaran "+(G().viol||0)+"/"+MAX_VIOLATION+(fsSupported?"":" · pantauan pindah aplikasi aktif")}
+async function enterFs(){
+ try{if(root.requestFullscreen)await root.requestFullscreen({navigationUI:"hide"});else if(root.webkitRequestFullscreen)root.webkitRequestFullscreen()}catch(e){}
+ try{if(navigator.keyboard&&navigator.keyboard.lock)await navigator.keyboard.lock(["Escape"])}catch(e){}
+}
+function playNoSleep(){
+ try{
+  if(!vid){vid=document.createElement("video");vid.setAttribute("playsinline","");vid.setAttribute("muted","");vid.setAttribute("loop","");vid.muted=true;vid.loop=true;
+   vid.style.cssText="position:fixed;left:0;top:0;width:1px;height:1px;opacity:.01;pointer-events:none";
+   vid.src="data:video/mp4;base64,AAAAIGZ0eXBpc29tAAACAGlzb21pc28yYXZjMW1wNDEAAAM4bW9vdgAAAGxtdmhkAAAAAAAAAAAAAAAAAAAD6AAAA+gAAQAAAQAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAmJ0cmFrAAAAXHRraGQAAAADAAAAAAAAAAAAAAABAAAAAAAAA+gAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAABAAAAAAEAAAABAAAAAAAAkZWR0cwAAABxlbHN0AAAAAAAAAAEAAAPoAAAAAAABAAAAAAHabWRpYQAAACBtZGhkAAAAAAAAAAAAAAAAAAAoAAAAKABVxAAAAAAALWhkbHIAAAAAAAAAAHZpZGUAAAAAAAAAAAAAAABWaWRlb0hhbmRsZXIAAAABhW1pbmYAAAAUdm1oZAAAAAEAAAAAAAAAAAAAACRkaW5mAAAAHGRyZWYAAAAAAAAAAQAAAAx1cmwgAAAAAQAAAUVzdGJsAAAAuXN0c2QAAAAAAAAAAQAAAKlhdmMxAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAEAAQABIAAAASAAAAAAAAAABFUxhdmM2MC4zMS4xMDIgbGlieDI2NAAAAAAAAAAAAAAAGP//AAAAL2F2Y0MBQsAK/+EAF2dCwArZBCbARAAAAwAEAAADACg8SJkgAQAFaMuDyyAAAAAQcGFzcAAAAAEAAAABAAAAFGJ0cnQAAAAAAAAVwAAAFcAAAAAYc3R0cwAAAAAAAAABAAAABQAACAAAAAAUc3RzcwAAAAAAAAABAAAAAQAAABxzdHNjAAAAAAAAAAEAAAABAAAABQAAAAEAAAAoc3RzegAAAAAAAAAAAAAABQAAAo8AAAAKAAAACwAAAAoAAAAKAAAAFHN0Y28AAAAAAAAAAQAAA2gAAABidWR0YQAAAFptZXRhAAAAAAAAACFoZGxyAAAAAAAAAABtZGlyYXBwbAAAAAAAAAAAAAAAAC1pbHN0AAAAJal0b28AAAAdZGF0YQAAAAEAAAAATGF2ZjYwLjE2LjEwMAAAAAhmcmVlAAACwG1kYXQAAAJwBgX//2zcRem95tlIt5Ys2CDZI+7veDI2NCAtIGNvcmUgMTY0IHIzMTA4IDMxZTE5ZjkgLSBILjI2NC9NUEVHLTQgQVZDIGNvZGVjIC0gQ29weWxlZnQgMjAwMy0yMDIzIC0gaHR0cDovL3d3dy52aWRlb2xhbi5vcmcveDI2NC5odG1sIC0gb3B0aW9uczogY2FiYWM9MCByZWY9MyBkZWJsb2NrPTE6MDowIGFuYWx5c2U9MHgxOjB4MTExIG1lPWhleCBzdWJtZT03IHBzeT0xIHBzeV9yZD0xLjAwOjAuMDAgbWl4ZWRfcmVmPTEgbWVfcmFuZ2U9MTYgY2hyb21hX21lPTEgdHJlbGxpcz0xIDh4OGRjdD0wIGNxbT0wIGRlYWR6b25lPTIxLDExIGZhc3RfcHNraXA9MSBjaHJvbWFfcXBfb2Zmc2V0PS0yIHRocmVhZHM9MSBsb29rYWhlYWRfdGhyZWFkcz0xIHNsaWNlZF90aHJlYWRzPTAgbnI9MCBkZWNpbWF0ZT0xIGludGVybGFjZWQ9MCBibHVyYXlfY29tcGF0PTAgY29uc3RyYWluZWRfaW50cmE9MCBiZnJhbWVzPTAgd2VpZ2h0cD0wIGtleWludD0yNTAga2V5aW50X21pbj01IHNjZW5lY3V0PTQwIGludHJhX3JlZnJlc2g9MCByY19sb29rYWhlYWQ9NDAgcmM9Y3JmIG1idHJlZT0xIGNyZj0yMy4wIHFjb21wPTAuNjAgcXBtaW49MCBxcG1heD02OSBxcHN0ZXA9NCBpcF9yYXRpbz0xLjQwIGFxPTE6MS4wMACAAAAAF2WIhAR8mKAANiMnJyddddddddddddeAAAAABkGaOAj4RgAAAAdBmlQCPhGAAAAABkGaYBDwjAAAAAZBmoA/wjA=";document.body.appendChild(vid)}
+  const p=vid.play();if(p&&p.catch)p.catch(function(){});
+ }catch(e){}
+}
+function keepAwake(){
+ try{
+  if(navigator.wakeLock&&navigator.wakeLock.request){
+   if(wl)return;
+   navigator.wakeLock.request("screen").then(function(l){wl=l;if(l&&l.addEventListener)l.addEventListener("release",function(){wl=null})}).catch(function(){playNoSleep()});
+  }else playNoSleep();
+ }catch(e){playNoSleep()}
+}
+function tick(){if(ended)return;const left=Math.max(0,Math.ceil((lockedAt+LOCK_SECONDS*1000-Date.now())/1000)),b=$g("gdBack");b.disabled=left>0;b.textContent=left>0?"Kembali ke latihan ("+left+")":"Kembali ke latihan"}
+function lock(why){
+ locked=true;lockedAt=Date.now();
+ $g("gdTitle").textContent="Layar latihan terkunci";
+ $g("gdWhy").textContent="Terdeteksi: "+why+".";
+ $g("gdCnt").textContent="Pelanggaran "+G().viol+" dari "+MAX_VIOLATION+". Pada pelanggaran ke-"+MAX_VIOLATION+", sesi diakhiri otomatis dan progres dikumpulkan.";
+ $g("gdTeacher").style.display="";
+ $g("gdOverlay").classList.add("on");tick();
+ clearInterval(timer);timer=setInterval(tick,500);
+}
+function unlock(){locked=false;clearInterval(timer);$g("gdOverlay").classList.remove("on");ignoreUntil=Date.now()+1500;lastEv=Date.now();enterFs();keepAwake()}
+function back(){
+ if(ended){$g("gdOverlay").classList.remove("on");return}
+ if(Date.now()<lockedAt+LOCK_SECONDS*1000)return;
+ unlock();
+}
+function teacherUnlock(){
+ const pw=$g("gdPass").value.trim(),er=$g("gdErr");
+ if(!pw){er.textContent="Masukkan password guru.";return}
+ if(cyrb(pw,11)!==KEYH){er.textContent="Password salah.";return}
+ er.textContent="";$g("gdPass").value="";
+ const g=G();g.viol=Math.max(0,(g.viol||0)-1);(g.log=g.log||[]).push(clock()+" kunci dibuka oleh guru");
+ save();updBadge();unlock();
+}
+function showEnd(){
+ ended=true;clearInterval(timer);
+ $g("gdTitle").textContent="Sesi diakhiri otomatis";
+ $g("gdWhy").textContent="Pelanggaran aturan mencapai "+MAX_VIOLATION+" kali, sehingga sesi diakhiri dan progres Anda dikumpulkan.";
+ $g("gdCnt").textContent="Progres terakhir dapat dilihat setelah menutup pesan ini.";
+ $g("gdTeacher").style.display="none";
+ const b=$g("gdBack");b.disabled=false;b.textContent="Lihat progres";
+ $g("gdOverlay").classList.add("on");
+}
+function violate(why,force){
+ if(!active||ST.fin||locked)return;
+ const now=Date.now();
+ if(!force&&(busy||now<ignoreUntil||now-lastEv<GRACE_MS))return;
+ lastEv=now;
+ const g=G();g.viol=(g.viol||0)+1;(g.log=g.log||[]).push(clock()+" "+why);
+ save();updBadge();
+ if(g.viol>=MAX_VIOLATION){locked=true;gxFinish("auto");showEnd()}else lock(why);
+}
+function hookDialogs(){
+ if(hooked)return;hooked=true;
+ ["confirm","alert","prompt"].forEach(n=>{const o=window[n];if(typeof o!=="function")return;window[n]=function(){busy++;try{return o.apply(window,arguments)}finally{busy--;ignoreUntil=Date.now()+1500}}});
+}
+function examStart(){
+ if(ST.fin)return;
+ build();active=true;ended=false;locked=false;
+ const reload=G().active==="1";
+ G().active="1";save();
+ document.body.classList.add("gd-on");$g("gdBadge").style.display="block";updBadge();
+ hookDialogs();keepAwake();enterFs();
+ if(!pushed){try{history.pushState(null,"",location.href);pushed=true}catch(e){}}
+ ignoreUntil=Date.now()+1500;
+ if(reload)violate("halaman ditutup atau dimuat ulang",true);
+}
+function examEnd(){
+ if(!active)return;active=false;
+ G().active="0";save();
+ document.body.classList.remove("gd-on");
+ const b=$g("gdBadge");if(b)b.style.display="none";
+ try{if(isFs())(document.exitFullscreen||document.webkitExitFullscreen).call(document)}catch(e){}
+ try{navigator.keyboard&&navigator.keyboard.unlock&&navigator.keyboard.unlock()}catch(e){}
+ try{if(wl){wl.release();wl=null}}catch(e){}
+ try{if(vid)vid.pause()}catch(e){}
+}
+function onFs(){
+ if(!active)return;
+ if(isFs()){wasFs=true;return}
+ if(!wasFs)return;
+ violate("keluar dari layar penuh");
+}
+window.gdStart=examStart;window.gdStop=examEnd;
+document.addEventListener("visibilitychange",()=>{if(document.hidden)violate("berpindah tab atau aplikasi");else if(active&&!ST.fin)keepAwake()});
+window.addEventListener("blur",()=>{setTimeout(()=>{const ae=document.activeElement;if(ae&&ae.tagName==="IFRAME")return;if(!document.hasFocus())violate("jendela latihan kehilangan fokus")},400)});
+document.addEventListener("fullscreenchange",onFs);
+document.addEventListener("webkitfullscreenchange",onFs);
+window.addEventListener("beforeunload",e=>{if(active&&!ST.fin){e.preventDefault();e.returnValue="";return ""}});
+window.addEventListener("popstate",()=>{if(active&&!ST.fin){try{history.pushState(null,"",location.href)}catch(e){}}});
+["contextmenu","copy","cut","paste","dragstart","selectstart"].forEach(ev=>document.addEventListener(ev,e=>{
+ if(!active||ST.fin)return;const t=e.target&&e.target.tagName;if(t==="INPUT"||t==="TEXTAREA"||t==="SELECT")return;e.preventDefault()},true));
+document.addEventListener("keydown",e=>{
+ if(!active||ST.fin)return;const k=(e.key||"").toLowerCase(),c=e.ctrlKey||e.metaKey;
+ if(k==="f12"||(c&&e.shiftKey&&["i","j","c"].indexOf(k)>=0)||(c&&["u","s","p"].indexOf(k)>=0)){e.preventDefault();e.stopPropagation()}},true);
+document.addEventListener("keyup",e=>{if(active&&!ST.fin&&e.key==="PrintScreen"){try{navigator.clipboard.writeText("")}catch(x){}violate("tombol PrintScreen")}});
+window.addEventListener("resize",()=>{if(!active||ST.fin||!isIOS)return;clearTimeout(rz);rz=setTimeout(()=>{const m=Math.min(screen.width,screen.height);if(window.innerWidth<m*0.8)violate("ukuran jendela berubah (split view atau slide over)")},800)});
+if(isIOS){try{const r=document.querySelector(".rules");if(r&&r.insertAdjacentElement){const d=document.createElement("div");d.className="gd-ios";d.innerHTML="<b>Pengguna iPhone/iPad, lakukan sebelum mulai:</b><br>1. Pengaturan &gt; Layar &amp; Kecerahan &gt; Kunci Otomatis &gt; <b>Tidak Pernah</b> (agar layar tidak mati dan dihitung pelanggaran).<br>2. Aktifkan <b>Akses Berpemandu</b> (Pengaturan &gt; Aksesibilitas), lalu tekan tombol samping 3 kali setelah sesi dimulai.<br>3. Jika dibuka lewat tautan web: Bagikan &gt; <b>Tambah ke Layar Utama</b>, lalu buka dari ikon agar tampil penuh.";r.insertAdjacentElement("afterend",d)}}catch(e){}}
+document.addEventListener("click",()=>{if(active&&!locked&&!ST.fin&&fsSupported&&!isFs())enterFs()},true);
+})();
 
 </script></body></html>
