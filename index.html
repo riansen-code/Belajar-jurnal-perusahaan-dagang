@@ -292,7 +292,7 @@ function gxSend(){
  try{const S=gxStat();fetch(GX_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({latihan:"Belajar Transaksi Perusahaan Dagang",name:ME.name,className:ME.cls,status:gxStatusTxt(),benar:S.ok,total:S.tot,percobaan:S.tries,pelanggaran:(ST.g||{}).viol||0,log:(ST.g||{}).log||[],mulai:ST.t0,selesai:ST.fin&&ST.fin.t})})}catch(e){}
 }
 function gxProg(){V={prog:true,home:false,m:null,i:null,tab:0,chk:null,pem:false};render()}
-function gxEnd(){if(confirm("Akhiri sesi dan kumpulkan progres? Setelah diakhiri, sesi tidak dapat dilanjutkan tanpa izin guru."))gxFinish("manual")}
+function gxEnd(){const S=gxStat();if(S.ok<S.tot){alert("Sesi baru bisa diakhiri setelah semua materi selesai ("+S.ok+"/"+S.tot+" soal benar).");return}if(confirm("Akhiri sesi dan kumpulkan progres? Setelah diakhiri, sesi tidak dapat dilanjutkan tanpa izin guru."))gxFinish("manual")}
 function gxFinish(type){
  if(ST.fin)return;
  ST.fin={t:new Date().toISOString(),type};save();
@@ -315,9 +315,9 @@ function progView(){
 <div class="stats"><div class="stat"><span>Soal benar</span><strong>${S.ok}/${S.tot}</strong></div><div class="stat"><span>Sudah dicoba</span><strong>${S.tr}/${S.tot}</strong></div><div class="stat"><span>Total percobaan</span><strong>${S.tries}</strong></div></div>
 <div class="section-title">Progres per materi</div>
 ${S.per.map(p=>`<div style="margin:0 0 11px"><div style="display:flex;justify-content:space-between;gap:8px;font-size:12.5px"><span><b>${esc2(p.code)}</b> ${esc2(p.name)}</span><span>${p.ok}/5 benar · ${p.tries}x coba${p.score!=null?" · <b>nilai "+p.score+"</b>":""}${MD()[p.m]?' · <a href="#" onclick="mdPDF(MD()['+p.m+']);return false">PDF</a> · <a href="#" onclick="mdTXT(MD()['+p.m+']);return false">TXT</a>':""}</span></div><div class="pbar" style="margin:5px 0 0"><i style="width:${p.ok*20}%"></i></div></div>`).join("")}
-<div class="section-title">Informasi sesi</div>
+${f||S.ok>=S.tot?"":`<div class="notice">Sesi baru bisa diakhiri setelah semua ${MAT.length} materi selesai (${S.ok}/${S.tot} soal benar).</div>`}<div class="section-title">Informasi sesi</div>
 <div class="notice">Mulai: ${esc2(gxFmt(ST.t0))}<br>Selesai: ${f?esc2(gxFmt(f.t)):"-"}<br>Pelanggaran layar: <b>${g.viol||0}</b> kali${(g.log&&g.log.length)?"<br><small>"+g.log.map(esc2).join("<br>")+"</small>":""}</div>
-<div class="bottom-actions" style="margin-top:6px">${f?"":`<button class="btn" onclick="goHome()">← Kembali belajar</button><button class="btn gold" onclick="gxEnd()">Akhiri sesi &amp; kumpulkan progres</button>`}<button class="btn primary" onclick="gxPDF()">⬇ Unduh PDF</button><button class="btn" onclick="gxTXT()">⬇ Unduh TXT</button></div>
+<div class="bottom-actions" style="margin-top:6px">${f?"":`<button class="btn" onclick="goHome()">← Kembali belajar</button><button class="btn gold" ${S.ok>=S.tot?"":"disabled"} onclick="gxEnd()">${S.ok>=S.tot?"":"🔒 "}Akhiri sesi &amp; kumpulkan progres</button>`}<button class="btn primary" onclick="gxPDF()">⬇ Unduh PDF</button><button class="btn" onclick="gxTXT()">⬇ Unduh TXT</button></div>
 ${f?`<details class="gx-t"><summary>Guru: buka kembali sesi</summary><div class="key-lock" style="margin-top:8px"><input id="gxPw" type="password" autocomplete="off" placeholder="Password guru"><button class="btn" onclick="gxReopen()">Buka kembali sesi</button><p id="gxPwErr" class="key-err"></p></div></details>`:""}`;
 }
 function gxLogin(){
