@@ -28,10 +28,10 @@ body.gd-on{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .md-box h2{margin:4px 0 2px;color:var(--green);font-size:20px}.md-box .table-wrap{margin:12px 0 8px}.md-box table{min-width:0}.md-box .btn{width:100%;padding:12px}.md-box .col{display:flex;flex-direction:column;gap:8px;margin-top:12px}
 </style><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script></head><body class="nologin">
 <div id="gxLogin"><div class="gx-card"><div class="gx-logo">LM</div><h2>Belajar Transaksi Perusahaan Dagang</h2><p class="hint">UD Lestari Makmur · latihan per jenis transaksi</p>
-<div class="field"><label>Nama lengkap</label><input id="gxName" placeholder="Contoh: Siti Nurhaliza" autocomplete="off" onkeydown="if(event.key==='Enter')gxLogin()"></div>
+<div class="field"><label>Nama lengkap</label><input id="gxName" placeholder="KETIK NAMA LENGKAP" autocomplete="off" autocapitalize="characters" spellcheck="false" style="text-transform:uppercase;font-weight:600" oninput="var a=this.selectionStart,b=this.selectionEnd;this.value=this.value.toUpperCase().replace(/[^A-Z .,'\-]/g,'');this.setSelectionRange(a,b)" onkeydown="if(event.key==='Enter')gxLogin()"></div>
 <div class="field"><label>Kelas</label><select id="gxClass"><option value="XII AK" selected>XII AK</option></select></div>
 <button class="btn primary" onclick="gxLogin()">Mulai belajar</button>
-<div class="rules"><b>Sebelum mulai</b><ul><li>Isi nama sesuai absen. Progres tersimpan atas nama ini di perangkat dan browser ini.</li><li><b>Mode aman:</b> sesi berjalan layar penuh. Keluar dari layar, pindah tab/aplikasi, atau membuka jendela lain akan mengunci layar dan dicatat. Pelanggaran ke-3 mengakhiri sesi dan progres dikumpulkan.</li><li>Halaman <b>progres akhir</b> muncul saat semua 60 soal benar, atau saat kamu menekan <b>Akhiri sesi</b>. Hasilnya bisa diunduh sebagai PDF atau TXT.</li></ul></div></div></div>
+<div class="rules"><b>Sebelum mulai</b><ul><li>Isi nama sesuai absen. Progres tersimpan atas nama ini di perangkat dan browser ini.</li><li><b>Mode aman:</b> sesi berjalan layar penuh. Keluar dari layar, pindah tab/aplikasi, atau membuka jendela lain akan mengunci layar dan dicatat. Pelanggaran ke-3 mengakhiri sesi dan progres dikumpulkan.</li><li>Setiap selesai satu materi (5 soal benar) kamu mendapat <b>laporan PDF</b> berisi nama, kode soal, dan nilai. Setelah itu kamu boleh menekan <b>Keluar &amp; simpan</b> tanpa dihitung pelanggaran. Login lagi dengan nama yang sama untuk melanjutkan ke materi berikutnya.</li><li>Halaman <b>progres akhir</b> muncul saat semua 60 soal benar. Hasilnya bisa diunduh sebagai PDF atau TXT.</li></ul></div></div></div>
 <div id="gxDone"><div class="gx-box"><div class="ic">🎉</div><h2>Semua soal sudah benar!</h2><p>Hebat, <b id="gxDoneName"></b>! Seluruh 60 soal sudah kamu selesaikan. Tekan tombol di bawah untuk melihat halaman progres akhir.</p><button onclick="gxFinish('semua')">Lihat progres akhir</button></div></div>
 
 <div id="mdDone"><div class="md-box" id="mdBox"></div></div>
@@ -204,7 +204,7 @@ const status=(m,i)=>{const p=ST.p[key(m,i)];return p?(p.ok?"ok":"try"):""},esc2=
 const cur=()=>{const ch=chain(V.m,vr(V.m));return{ch,sc:ch.cs[V.i],UA:ST.a[akey(V.m)]=ST.a[akey(V.m)]||{}}};
 function header(t,s,tag){$("#sheetHeader").innerHTML=`<div><h2>${t}</h2><p>${s}</p></div><span class="tag">${tag}</span>`}
 function home(){const tot=MAT.length*5,ok=MAT.reduce((a,_,m)=>a+[0,1,2,3,4].filter(i=>status(m,i)==="ok").length,0),grp=[...new Set(ORD_M.map(m=>MAT[m][2]))];header("Pilih materi",`${ok} dari ${tot} soal sudah benar`,"BELAJAR");
-return`<div class="notice"><b>Kerjakan per materi, berurutan.</b> Materi berikutnya terbuka setelah kelima soal materi sebelumnya benar semua. Setiap materi yang selesai menghasilkan nilai dan laporan yang bisa diunduh.<br><br>Tiap materi punya 5 soal berurutan. Lembar kerja dilanjutkan dari soal ke soal (baris sebelumnya tetap terlihat), dan hanya lembar yang terpengaruh transaksi yang ditampilkan.<details style="margin-top:8px"><summary><b>Aturan yang dipakai di semua soal</b></summary><ul><li>PPN 11%. Persediaan perpetual FIFO.</li><li>Termin 2/10, n/30: potongan 2% bila dibayar dalam 10 hari sejak tanggal faktur (hari faktur = hari ke-0; hari ke-10 masih berlaku), selebihnya bayar penuh paling lambat hari ke-30.</li><li>Potongan hanya untuk pelunasan penuh, dihitung dari total faktur (termasuk PPN bila ada).</li><li>Pengeluaran sampai ${rp(LIMIT)} dari kas kecil; di atasnya lewat bank (Jurnal Pengeluaran Kas).</li><li>HPP, retur, dan koreksi dicatat di Jurnal Umum. Tulis tanggal format dd/mm/yyyy dan pilih No. Bukti serta Ref sesuai soal.</li><li>Total, nomor akun, dan rekapitulasi akhir bulan tidak diisi di latihan ini.</li></ul></details></div><div class="bottom-actions" style="margin:0 0 10px"><button class="btn" onclick="openTB()">📒 Neraca Saldo (nomor akun)</button><button class="btn" onclick="openKunci()">🔐 Kunci Jawaban</button><button class="btn" onclick="gxProg()">📊 Lihat progres</button></div>
+return`<div class="notice"><b>Kerjakan per materi, berurutan.</b> Materi berikutnya terbuka setelah kelima soal materi sebelumnya benar semua. Setiap materi yang selesai menghasilkan nilai dan laporan yang bisa diunduh.<br><br>Tiap materi punya 5 soal berurutan. Lembar kerja dilanjutkan dari soal ke soal (baris sebelumnya tetap terlihat), dan hanya lembar yang terpengaruh transaksi yang ditampilkan.<details style="margin-top:8px"><summary><b>Aturan yang dipakai di semua soal</b></summary><ul><li>PPN 11%. Persediaan perpetual FIFO.</li><li>Termin 2/10, n/30: potongan 2% bila dibayar dalam 10 hari sejak tanggal faktur (hari faktur = hari ke-0; hari ke-10 masih berlaku), selebihnya bayar penuh paling lambat hari ke-30.</li><li>Potongan hanya untuk pelunasan penuh, dihitung dari total faktur (termasuk PPN bila ada).</li><li>Pengeluaran sampai ${rp(LIMIT)} dari kas kecil; di atasnya lewat bank (Jurnal Pengeluaran Kas).</li><li>HPP, retur, dan koreksi dicatat di Jurnal Umum. Tulis tanggal format dd/mm/yyyy dan pilih No. Bukti serta Ref sesuai soal.</li><li>Total, nomor akun, dan rekapitulasi akhir bulan tidak diisi di latihan ini.</li></ul></details></div><div class="bottom-actions" style="margin:0 0 10px"><button class="btn" onclick="openTB()">📒 Neraca Saldo (nomor akun)</button><button class="btn" onclick="openKunci()">🔐 Kunci Jawaban</button><button class="btn" onclick="gxProg()">📊 Lihat progres</button><button class="btn" onclick="gxExit()">🚪 Keluar &amp; simpan</button></div>
 ${grp.map(g=>`<div class="section-title">${g}</div><div class="nav-list">${ORD_M.map(m=>{const x=MAT[m];return x[2]===g?(mdUnlocked(m)?`<button class="nav" onclick="openM(${m})"><span class="n">${MD()[m]?"✓":x[0]}</span><span class="label">${x[1]} (${[0,1,2,3,4].filter(i=>status(m,i)==="ok").length}/5)${MD()[m]?" · nilai "+MD()[m].score:""}</span></button>`:`<button class="nav" disabled style="opacity:.5;cursor:not-allowed"><span class="n">🔒</span><span class="label">${x[1]} (terkunci)</span></button>`):""}).join("")}</div>`).join("")}
 <p class="hint" style="text-align:center;margin-top:16px"><a href="#" onclick="if(confirm('Hapus semua progres dan jawaban?')){ST={p:{},a:{},v:{},md:{},un:{},mr:{},tc:{},g:ST.g,t0:ST.t0};assignVar();render()}return false">Hapus progres</a></p>`}
 function materi(m){const x=MAT[m],ch=chain(m,vr(m));header(x[0]+" "+x[1],"Baca ringkasan, lalu kerjakan soal berurutan","MATERI");return`<div class="bottom-actions" style="margin:0 0 10px"><button class="btn" onclick="goHome()">← Semua materi</button></div>${mdBanner(m)}<div class="notice"><ul>${x[3].map(t=>`<li>${t}</li>`).join("")}</ul></div><div class="section-title">Soal latihan</div><div class="nav-list">${ch.cs.map((sc,i)=>{const s=status(m,i);if(i>0&&s!=="ok"&&status(m,i-1)!=="ok")return`<button class="nav" disabled style="opacity:.5;cursor:not-allowed"><span class="n">🔒</span><span class="label"><b>Soal ${i+1}</b> · terkunci<br><small>Benarkan Soal ${i} dulu</small></span></button>`;return`<button class="nav" onclick="openS(${m},${i})"><span class="n">${s==="ok"?"✓":i+1}</span><span class="label"><b>Soal ${i+1}</b> · ${esc2(sc.lbl)}<br><small>Lembar: ${sc.ord.map(k=>CFG[k].n).join(", ")}</small></span></button>`}).join("")}</div>`}
@@ -289,7 +289,7 @@ function gxPDF(){
 }
 function gxSend(){
  if(!GX_URL)return;
- try{const S=gxStat();fetch(GX_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({latihan:"Belajar Transaksi Perusahaan Dagang",name:ME.name,className:ME.cls,status:gxStatusTxt(),benar:S.ok,total:S.tot,percobaan:S.tries,pelanggaran:(ST.g||{}).viol||0,log:(ST.g||{}).log||[],mulai:ST.t0,selesai:ST.fin&&ST.fin.t})})}catch(e){}
+ try{const S=gxStat();fetch(GX_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({latihan:"Belajar Transaksi Perusahaan Dagang",name:ME.name,className:ME.cls,status:gxStatusTxt(),benar:S.ok,total:S.tot,percobaan:S.tries,pelanggaran:gxViol(),log:(ST.g||{}).log||[],mulai:ST.t0,selesai:ST.fin&&ST.fin.t})})}catch(e){}
 }
 function gxProg(){V={prog:true,home:false,m:null,i:null,tab:0,chk:null,pem:false};render()}
 function gxEnd(){const S=gxStat();if(S.ok<S.tot){alert("Sesi baru bisa diakhiri setelah semua materi selesai ("+S.ok+"/"+S.tot+" soal benar).");return}if(confirm("Akhiri sesi dan kumpulkan progres? Setelah diakhiri, sesi tidak dapat dilanjutkan tanpa izin guru."))gxFinish("manual")}
@@ -316,12 +316,12 @@ function progView(){
 <div class="section-title">Progres per materi</div>
 ${S.per.map(p=>`<div style="margin:0 0 11px"><div style="display:flex;justify-content:space-between;gap:8px;font-size:12.5px"><span><b>${esc2(p.code)}</b> ${esc2(p.name)}</span><span>${p.ok}/5 benar · ${p.tries}x coba${p.score!=null?" · <b>nilai "+p.score+"</b>":""}${MD()[p.m]?' · <a href="#" onclick="mdPDF(MD()['+p.m+']);return false">PDF</a> · <a href="#" onclick="mdTXT(MD()['+p.m+']);return false">TXT</a>':""}</span></div><div class="pbar" style="margin:5px 0 0"><i style="width:${p.ok*20}%"></i></div></div>`).join("")}
 ${f||S.ok>=S.tot?"":`<div class="notice">Sesi baru bisa diakhiri setelah semua ${MAT.length} materi selesai (${S.ok}/${S.tot} soal benar).</div>`}<div class="section-title">Informasi sesi</div>
-<div class="notice">Mulai: ${esc2(gxFmt(ST.t0))}<br>Selesai: ${f?esc2(gxFmt(f.t)):"-"}<br>Pelanggaran layar: <b>${g.viol||0}</b> kali${(g.log&&g.log.length)?"<br><small>"+g.log.map(esc2).join("<br>")+"</small>":""}</div>
+<div class="notice">Mulai: ${esc2(gxFmt(ST.t0))}<br>Selesai: ${f?esc2(gxFmt(f.t)):"-"}<br>Pelanggaran layar: <b>${gxViol()}</b> kali${((g.all||[]).concat(g.log||[])).length?"<br><small>"+(g.all||[]).concat(g.log||[]).map(esc2).join("<br>")+"</small>":""}</div>
 <div class="bottom-actions" style="margin-top:6px">${f?"":`<button class="btn" onclick="goHome()">← Kembali belajar</button><button class="btn gold" ${S.ok>=S.tot?"":"disabled"} onclick="gxEnd()">${S.ok>=S.tot?"":"🔒 "}Akhiri sesi &amp; kumpulkan progres</button>`}<button class="btn primary" onclick="gxPDF()">⬇ Unduh PDF</button><button class="btn" onclick="gxTXT()">⬇ Unduh TXT</button></div>
 ${f?`<details class="gx-t"><summary>Guru: buka kembali sesi</summary><div class="key-lock" style="margin-top:8px"><input id="gxPw" type="password" autocomplete="off" placeholder="Password guru"><button class="btn" onclick="gxReopen()">Buka kembali sesi</button><p id="gxPwErr" class="key-err"></p></div></details>`:""}`;
 }
 function gxLogin(){
- const n=gxById("gxName").value.trim().replace(/\s+/g," "),c=gxById("gxClass").value;
+ const n=gxById("gxName").value.trim().replace(/\s+/g," ").toUpperCase(),c=gxById("gxClass").value;
  if(n.length<3){alert("Isi nama lengkap sesuai absen.");return}
  if(!c){alert("Pilih kelas.");return}
  ME={name:n,cls:c};
@@ -332,6 +332,7 @@ function gxLogin(){
  document.body.classList.remove("nologin");gxById("gxLogin").style.display="none";
  const bp=document.querySelector(".brand p");if(bp)bp.textContent="UD Lestari Makmur · "+n+" ("+c+")";
  V={home:true,m:null,i:null,tab:0,chk:null,pem:false};render();
+ {const g=ST.g;if(g.active!=="1"){g.tot=(g.tot||0)+(g.viol||0);if(g.log&&g.log.length)g.all=(g.all||[]).concat(g.log);g.viol=0;g.log=[];save()}}
  if(!ST.fin&&window.gdStart)window.gdStart();
 }
 /* ===== PENILAIAN PER MATERI: urutan terkunci, nilai, laporan unduhan ===== */
@@ -339,15 +340,20 @@ const VAR_N=20;
 function assignVar(){ST.v=ST.v||{};MAT.forEach((x,m)=>{if(ST.v["m"+m]===undefined&&![0,1,2,3,4].some(i=>ST.p[key(m,i)]))ST.v["m"+m]=Math.floor(Math.random()*VAR_N)});save()}
 const ORD_M=[2,3,0,1,4,5,6,7,8,9,10,11],posM=m=>ORD_M.indexOf(m),nextM=m=>{const p=posM(m);return p>=0&&p<ORD_M.length-1?ORD_M[p+1]:-1},prevM=m=>{const p=posM(m);return p>0?ORD_M[p-1]:-1};
 const MD=()=>ST.md||(ST.md={});
+const gxViol=()=>{const g=ST.g||{};return(g.tot||0)+(g.viol||0)};
 const ptsOf=t=>t<=1?100:t===2?90:t===3?80:t===4?70:60;
 const gradeOf=s=>s>=90?"A (Sangat baik)":s>=80?"B (Baik)":s>=70?"C (Cukup)":"D (Perlu latihan)";
 const allOk=m=>m>=0&&[0,1,2,3,4].every(i=>status(m,i)==="ok");
 function mdUnlocked(m){return prevM(m)<0||allOk(prevM(m))||!!(ST.un&&ST.un[m])||[0,1,2,3,4].some(i=>ST.p[key(m,i)])}
+const mdBukti=c=>[...new Set(((c.codes||[]).join(" ")).match(/[A-Z]{2,3}-\d{2,4}/g)||[])].join(", ");
+const mdCode=(m,i,v)=>"M"+String(posM(m)+1).padStart(2,"0")+"-S"+(i+1)+"-V"+String(v).padStart(2,"0");
+function mdFill(s){const ch=chain(s.m,s.round-1);s.rows.forEach((r,k)=>{if(!r.code){const c=ch.cs[k];r.code=mdCode(s.m,k,s.round);r.txt=c.txt;r.bukti=mdBukti(c)}});s.kode="LM-M"+String(posM(s.m)+1).padStart(2,"0")+"-V"+String(s.round).padStart(2,"0");return s}
 function mdRecord(m){
- const ch=chain(m,vr(m)),rows=[0,1,2,3,4].map(i=>{const p=ST.p[key(m,i)]||{},t=p.okTry||p.tries||1;return{i:i+1,lbl:ch.cs[i].lbl,tries:t,pts:ptsOf(t)}}),
- score=Math.round(rows.reduce((a,r)=>a+r.pts,0)/rows.length),g=ST.g||{},
- r={m,name:MAT[m][1],group:MAT[m][2],t:new Date().toISOString(),round:vr(m)+1,rows,score,grade:gradeOf(score),viol:g.viol||0};
- MD()[m]=r;ST.mr=ST.mr||{};ST.mr["m"+m]=vr(m);ST.un=ST.un||{};if(nextM(m)>=0)ST.un[nextM(m)]=1;save();return r}
+ const ch=chain(m,vr(m)),rows=[0,1,2,3,4].map(i=>{const p=ST.p[key(m,i)]||{},t=p.okTry||p.tries||1;return{i:i+1,lbl:ch.cs[i].lbl,txt:ch.cs[i].txt,bukti:mdBukti(ch.cs[i]),code:mdCode(m,i,vr(m)+1),tries:t,pts:ptsOf(t)}}),
+ score=Math.round(rows.reduce((a,r)=>a+r.pts,0)/rows.length),g=ST.g||(ST.g={viol:0,log:[]}),tv=gxViol(),
+ r={m,name:MAT[m][1],group:MAT[m][2],t:new Date().toISOString(),round:vr(m)+1,rows,score,grade:gradeOf(score),viol:Math.max(0,tv-(g.mbase||0))};
+ g.mbase=tv;mdFill(r);
+ MD()[m]=r;ST.mr=ST.mr||{};ST.mr["m"+m]=vr(m);ST.un=ST.un||{};if(nextM(m)>=0)ST.un[nextM(m)]=1;save();setTimeout(()=>gxSendMd(r),400);return r}
 function mdAfterCheck(m){
  if(m==null||ST.fin||!allOk(m))return;
  if(ST.mr&&ST.mr["m"+m]===vr(m)&&MD()[m])return;
@@ -364,41 +370,74 @@ function mdShow(m){
 <div class="scorebox" style="text-align:center"><div class="hint">Nilai materi</div><div style="font-size:44px;font-weight:900;line-height:1.1;color:var(--green)">${s.score}</div><b>Predikat ${esc2(s.grade)}</b></div>
 <div class="table-wrap"><table><thead><tr><th>Soal</th><th>Benar di</th><th>Nilai</th></tr></thead><tbody>${s.rows.map(r=>`<tr><td><b>${r.i}</b> <small class="muted">${esc2(r.lbl)}</small></td><td>percobaan ke-${r.tries}</td><td><b>${r.pts}</b></td></tr>`).join("")}</tbody></table></div>
 <p class="hint">Nilai per soal: benar di percobaan ke-1 = 100, ke-2 = 90, ke-3 = 80, ke-4 = 70, ke-5 dst = 60. Nilai materi = rata-rata 5 soal.</p>
-<div class="col"><button class="btn primary" onclick="mdPDF(MD()[${m}])">⬇ Unduh laporan (PDF)</button><button class="btn" onclick="mdTXT(MD()[${m}])">⬇ Unduh laporan (TXT)</button>${nx?`<button class="btn gold" onclick="mdNext(${m})">Lanjut: ${esc2(nx?MAT[nextM(m)][1]:"")} →</button>`:""}<button class="btn" onclick="mdList()">Daftar materi</button></div>`;
+<p class="hint">${GX_URL?"Laporan ini juga dikirim otomatis ke guru.":"Unduh PDF ini dan serahkan kepada guru."}</p><div class="col"><button class="btn primary" onclick="mdPDF(MD()[${m}])">⬇ Unduh laporan (PDF)</button><button class="btn" onclick="mdTXT(MD()[${m}])">⬇ Unduh laporan (TXT)</button>${nx?`<button class="btn gold" onclick="mdNext(${m})">Lanjut: ${esc2(nx?MAT[nextM(m)][1]:"")} →</button>`:""}<button class="btn" onclick="mdList()">Daftar materi</button><button class="btn" onclick="gxExit()">🚪 Keluar &amp; simpan (tanpa pelanggaran)</button></div>`;
  gxById("mdDone").classList.add("on")}
 function mdClose(){gxById("mdDone").classList.remove("on")}
 function mdNext(m){mdClose();openM(nextM(m))}
 function mdList(){mdClose();goHome()}
+
+/* ===== KELUAR & SIMPAN (tanpa pelanggaran) ===== */
+const mdBusy=()=>MAT.some((_,m)=>!allOk(m)&&[0,1,2,3,4].some(i=>ST.p[key(m,i)]));
+function gxExit(){
+ if(ST.fin)return;
+ if(mdBusy()){alert("Selesaikan dulu materi yang sedang dikerjakan (kelima soal harus benar), baru bisa keluar tanpa pelanggaran.");return}
+ if(!confirm("Keluar sekarang? Progres tersimpan. Login lagi dengan nama yang sama untuk lanjut ke materi berikutnya."))return;
+ save();if(window.gdStop)window.gdStop();mdClose();
+ ST={};const k=ME.cls;ME={name:"",cls:k};
+ document.body.classList.add("nologin");const L=gxById("gxLogin");L.style.display="";gxById("gxName").value="";
+ const sb=document.getElementById("sheetBody");if(sb)sb.innerHTML="";window.scrollTo(0,0)}
 const mdFn=(s,ext)=>"nilai_materi"+(posM(s.m)+1)+"_"+(ME.name+"_"+ME.cls).replace(/[^A-Za-z0-9]+/g,"_")+"."+ext;
 function mdLines(s){
- const L=["LAPORAN PENILAIAN MATERI","Belajar Transaksi Perusahaan Dagang - UD Lestari Makmur","SMK Ma'arif 1 Semaka",""];
- L.push("Nama          : "+ME.name,"Kelas         : "+ME.cls,"Materi        : "+(posM(s.m)+1)+". "+s.name+" ("+s.group+")","Selesai       : "+gxFmt(s.t),"Variasi angka : #"+s.round,"","RINCIAN SOAL");
- s.rows.forEach(r=>L.push("Soal "+r.i+" - "+r.lbl+" | benar di percobaan ke-"+r.tries+" | nilai "+r.pts));
- L.push("","NILAI MATERI : "+s.score+" / 100","Predikat     : "+s.grade,"Pelanggaran layar saat laporan dibuat : "+s.viol+" kali","","Keterangan: benar di percobaan ke-1 = 100, ke-2 = 90, ke-3 = 80, ke-4 = 70, ke-5 dst = 60. Nilai materi = rata-rata 5 soal.");
+ mdFill(s);
+ const L=["LAPORAN PENILAIAN MATERI","Belajar Transaksi Perusahaan Dagang - UD Lestari Makmur","SMK Ma'arif 1 Semaka","","Kode laporan  : "+s.kode,"","A. DATA SISWA"];
+ L.push("Nama lengkap  : "+ME.name,"Kelas         : "+ME.cls,"Materi        : "+(posM(s.m)+1)+" dari "+MAT.length+" - "+s.name+" (kelompok "+s.group+")","Variasi angka : #"+s.round,"Selesai       : "+gxFmt(s.t),"","B. RINCIAN SOAL");
+ s.rows.forEach(r=>{L.push(r.code+" ("+r.bukti+") - "+r.lbl,"   "+r.txt,"   Benar di percobaan ke-"+r.tries+" | nilai "+r.pts)});
+ L.push("","NILAI MATERI : "+s.score+" / 100","Predikat     : "+s.grade,"Pelanggaran layar pada materi ini : "+s.viol+" kali","","C. KETERANGAN","Nilai per soal: benar di percobaan ke-1 = 100, ke-2 = 90, ke-3 = 80, ke-4 = 70, ke-5 dst = 60.","Nilai materi = rata-rata 5 soal. Kode soal = M(urutan materi)-S(nomor soal)-V(variasi angka siswa).");
  return L}
 function mdTXT(s){
  if(!s)return;if(window.gdGrace)window.gdGrace(4000);
  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([mdLines(s).join("\r\n")],{type:"text/plain;charset=utf-8"}));a.download=mdFn(s,"txt");
  document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}
+function mdBuild(s){
+ if(!window.jspdf)return null;mdFill(s);
+ const{jsPDF}=window.jspdf,doc=new jsPDF({unit:"mm",format:"a4"}),M=15,PW=210,
+ sf=t=>String(t==null?"":t).replace(/[\u2013\u2014]/g,"-").replace(/\u2192/g,"->").replace(/[^\x20-\x7E\xA0-\xFF]/g,""),
+ GR=[18,60,53],MINT=[232,244,239],INK=[23,37,34],MUT=[102,115,110];let y;
+ const T=(x,yy,t,f,sz,c)=>{doc.setFont("helvetica",f||"normal");doc.setFontSize(sz||10);const k=c||INK;doc.setTextColor(k[0],k[1],k[2]);doc.text(sf(t),x,yy)};
+ const sec=t=>{if(y>268){doc.addPage();y=20}doc.setFillColor(MINT[0],MINT[1],MINT[2]);doc.rect(M,y-5,PW-2*M,7,"F");T(M+2,y,t,"bold",9.5,GR);y+=9};
+ doc.setFillColor(GR[0],GR[1],GR[2]);doc.rect(0,0,PW,32,"F");
+ T(M,14,"LAPORAN PENILAIAN MATERI","bold",16,[255,255,255]);
+ T(M,21,"Belajar Transaksi Perusahaan Dagang - UD Lestari Makmur","normal",9.5,[255,255,255]);T(M,26.5,"SMK Ma'arif 1 Semaka","normal",9.5,[255,255,255]);
+ doc.setTextColor(255,255,255);doc.setFont("helvetica","bold");doc.setFontSize(9);doc.text("KODE LAPORAN",PW-M,14,{align:"right"});doc.setFontSize(13);doc.text(s.kode,PW-M,20,{align:"right"});
+ y=43;sec("A. DATA SISWA");
+ [["Nama lengkap",ME.name],["Kelas",ME.cls],["Materi",(posM(s.m)+1)+" dari "+MAT.length+" - "+s.name+" (kelompok "+s.group+")"],["Variasi angka","#"+s.round+"  (angka soal berbeda tiap siswa)"],["Selesai",(new Date(s.t)).toLocaleString("id-ID",{dateStyle:"long",timeStyle:"short"})]].forEach(r=>{T(M,y,r[0],"bold",10);T(M+34,y,": "+r[1],"normal",10);y+=6.2});
+ y+=3;sec("B. RINCIAN SOAL");
+ const cx=[M+2,M+30,M+132,M+160];
+ ["KODE SOAL","SOAL","BENAR DI","NILAI"].forEach((t,k)=>T(cx[k],y,t,"bold",8.5,MUT));
+ y+=2.5;doc.setDrawColor(204,217,211);doc.line(M,y,PW-M,y);y+=5;
+ s.rows.forEach(r=>{doc.setFont("helvetica","normal");doc.setFontSize(8.5);const ls=doc.splitTextToSize(sf(r.txt),98),h=Math.max(13,5+ls.length*4.3+3);
+  if(y+h>272){doc.addPage();y=20}
+  T(cx[0],y,r.code,"bold",9);T(cx[0],y+4.5,r.bukti,"normal",8.5,MUT);T(cx[1],y,r.lbl,"bold",9);
+  doc.setFont("helvetica","normal");doc.setFontSize(8.5);doc.setTextColor(64,77,72);ls.forEach((l,k)=>doc.text(l,cx[1],y+4.5+k*4.2));
+  T(cx[2],y,"percobaan "+r.tries,"normal",9.5);T(cx[3],y,String(r.pts),"bold",11);
+  y+=h;doc.setDrawColor(220,229,224);doc.line(M,y-3,PW-M,y-3)});
+ y+=4;if(y>245){doc.addPage();y=20}
+ doc.setFillColor(GR[0],GR[1],GR[2]);doc.roundedRect(M,y,PW-2*M,26,3,3,"F");
+ T(M+8,y+8,"NILAI MATERI","bold",11,[255,255,255]);T(M+8,y+20,String(s.score),"bold",28,[255,255,255]);
+ T(M+60,y+12,"Predikat: "+s.grade,"bold",12,[255,255,255]);T(M+60,y+19,"Pelanggaran layar pada materi ini: "+s.viol+" kali","normal",9.5,[255,255,255]);
+ y+=37;sec("C. KETERANGAN");
+ ["Nilai per soal: benar di percobaan ke-1 = 100, ke-2 = 90, ke-3 = 80, ke-4 = 70, ke-5 dan seterusnya = 60.","Nilai materi adalah rata-rata nilai 5 soal. Kode soal = M(urutan materi)-S(nomor soal)-V(variasi angka siswa).","Satu siswa menghasilkan satu laporan per materi ("+MAT.length+" laporan)."].forEach(t=>doc.splitTextToSize(sf(t),PW-2*M).forEach(q=>{T(M,y,q,"normal",9);y+=4.8}));
+ const n=doc.getNumberOfPages();for(let p=1;p<=n;p++){doc.setPage(p);T(M,287,"Dibuat otomatis oleh aplikasi - "+ME.name+" ("+ME.cls+")","italic",8.5,MUT);doc.setFont("helvetica","normal");doc.setFontSize(8.5);doc.setTextColor(MUT[0],MUT[1],MUT[2]);doc.text("Halaman "+p+" dari "+n,PW-M,287,{align:"right"})}
+ return doc}
 function mdPDF(s){
  if(!s)return;
  if(!window.jspdf){alert("Fitur PDF memerlukan koneksi internet. Unduh TXT, atau coba lagi saat online.");mdTXT(s);return}
  if(window.gdGrace)window.gdGrace(5000);
- const{jsPDF}=window.jspdf,doc=new jsPDF({unit:"mm",format:"a4"}),sf=t=>String(t==null?"":t).replace(/[^\x20-\x7E\xA0-\xFF]/g,""),M=15;let y;
- doc.setFillColor(18,60,53);doc.rect(0,0,210,32,"F");
- doc.setTextColor(255,255,255);doc.setFont("helvetica","bold");doc.setFontSize(16);doc.text("LAPORAN PENILAIAN MATERI",M,14);
- doc.setFont("helvetica","normal");doc.setFontSize(9.5);doc.text("Belajar Transaksi Perusahaan Dagang - UD Lestari Makmur",M,21);doc.text("SMK Ma'arif 1 Semaka",M,26.5);
- doc.setTextColor(23,37,34);doc.setFontSize(10.5);y=43;
- [["Nama",ME.name],["Kelas",ME.cls],["Materi",(posM(s.m)+1)+". "+s.name+" ("+s.group+")"],["Selesai",gxFmt(s.t)],["Variasi angka","#"+s.round]].forEach(r=>{doc.setFont("helvetica","bold");doc.text(r[0],M,y);doc.setFont("helvetica","normal");doc.text(sf(": "+r[1]),M+34,y);y+=6.5});
- y+=5;doc.setFillColor(232,244,239);doc.rect(M,y-5,180,8,"F");doc.setFont("helvetica","bold");doc.setFontSize(9.5);
- doc.text("Soal",M+2,y);doc.text("Keterangan",M+16,y);doc.text("Benar di",M+130,y);doc.text("Nilai",M+167,y);y+=8;
- doc.setFont("helvetica","normal");doc.setDrawColor(220,229,224);
- s.rows.forEach(r=>{const ls=doc.splitTextToSize(sf(r.lbl),108);doc.text(String(r.i),M+2,y);doc.text(ls,M+16,y);doc.text("percobaan "+r.tries,M+130,y);doc.text(String(r.pts),M+167,y);y+=Math.max(1,ls.length)*5+2;doc.line(M,y-3.5,M+180,y-3.5)});
- y+=6;doc.setFillColor(18,60,53);doc.roundedRect(M,y,180,26,3,3,"F");doc.setTextColor(255,255,255);doc.setFont("helvetica","bold");
- doc.setFontSize(11);doc.text("NILAI MATERI",M+8,y+9);doc.setFontSize(26);doc.text(String(s.score),M+8,y+21);doc.setFontSize(12);doc.text("Predikat: "+sf(s.grade),M+62,y+16);y+=37;
- doc.setTextColor(23,37,34);doc.setFont("helvetica","normal");doc.setFontSize(9);
- ["Pelanggaran layar saat laporan dibuat: "+s.viol+" kali.","Penilaian per soal: benar pada percobaan ke-1 = 100, ke-2 = 90, ke-3 = 80, ke-4 = 70, ke-5 dan seterusnya = 60.","Nilai materi adalah rata-rata nilai 5 soal. Materi dinyatakan selesai setelah kelima soal benar."].forEach(t=>{doc.splitTextToSize(t,180).forEach(q=>{doc.text(q,M,y);y+=4.8})});
- doc.save(mdFn(s,"pdf"))}
+ const d=mdBuild(s);if(d)d.save(mdFn(s,"pdf"))}
+function gxSendMd(s){
+ if(!GX_URL||!s)return;
+ try{mdFill(s);let pdf="";try{const d=mdBuild(s);if(d)pdf=(d.output("datauristring").split(",")[1])||""}catch(e){}
+  fetch(GX_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({tipe:"materi",latihan:"Belajar Transaksi Perusahaan Dagang",name:ME.name,className:ME.cls,kodeLaporan:s.kode,materi:(posM(s.m)+1)+". "+s.name,kelompok:s.group,variasi:s.round,selesai:s.t,nilai:s.score,predikat:s.grade,pelanggaran:s.viol,soal:s.rows.map(r=>({kode:r.code,bukti:r.bukti,jenis:r.lbl,percobaan:r.tries,nilai:r.pts})),pdfNama:mdFn(s,"pdf"),pdfBase64:pdf})}).catch(()=>{})}catch(e){}}
 const _gxDoCheck=doCheck;
 doCheck=function(){const m=V.m,k=key(V.m,V.i);ST.tc=ST.tc||{};ST.tc[k]=(ST.tc[k]||0)+1;_gxDoCheck.apply(this,arguments);const p=ST.p[k];if(p&&p.ok&&!p.okTry){p.okTry=ST.tc[k];save()}mdAfterCheck(m);gxCheckDone()};
 
