@@ -139,8 +139,8 @@ G.push((i,r,S)=>{const[ac,tt,a]=[["Prepaid Rent","membayar sewa kios untuk 3 bul
 return{lbl:tt,txt:`Tanggal ${d} ${tt} sebesar ${rp(a)} lewat bank.`,codes:[`Tanggal ${d}`,`Bukti kas keluar ${b}`],info:[`Batas pengeluaran kas kecil: ${rp(LIMIT)}. Sampai batas itu dibayar dari kas kecil; di atasnya lewat bank.`],bk:[b],sh:{payment:{h:{tanggal:d,bukti:b,ref:""},r:[pm(Object.assign({cash:T(a)},dA(ac,a)))]}},steps:[`${rp(a)} lebih besar dari batas ${rp(LIMIT)}, jadi tidak lewat kas kecil melainkan Jurnal Pengeluaran Kas.`,`Kolom Others debit: ${ac} ${rp(a)}; Cash in Bank kredit ${rp(a)}.`]}});
 /* 7 Kas kecil */
 G.push((i,r,S)=>{S.pet=S.pet||[];if(i===4){const s=S.pet.reduce((x,y)=>x+y[1],0),d2=DD(S.day+=r(2,4)),bb="BKK-0"+r(10,89);
-return{lbl:"pengisian kembali kas kecil",txt:`Tanggal ${d2} kas kecil diisi kembali sebesar total pengeluaran yang sudah dicatat, dari rekening bank.`,codes:[`Tanggal ${d2}`,`Bukti kas keluar ${bb}`],info:["Pengeluaran kas kecil yang sudah dicatat: "+S.pet.map(x=>x[0]+" "+rp(x[1])).join("; ")],bk:[bb],sh:{payment:{h:{tanggal:d2,bukti:bb,ref:""},r:[pm(Object.assign({cash:T(s)},dA("Petty Cash",s)))]}},steps:[`Total pengeluaran = ${S.pet.map(x=>fm(x[1])).join(" + ")} = ${rp(s)}.`,`Pengisian kembali dicatat di Jurnal Pengeluaran Kas: Petty Cash (Others debit) ${rp(s)}; Cash in Bank kredit ${rp(s)}.`]}}
-const[ac,tt,a]=[["Other Operating Expense","membayar konsumsi rapat",r(5,40)*10000],["Store Supplies Expenses","membeli alat tulis kantor (dibebankan)",r(5,45)*10000],["Telephone, Internet & Electricity Exp","membayar tagihan listrik dan air",500000],["Advertising Expenses","membayar cetak brosur promosi",r(10,45)*10000]][i],d=DD(S.day+=r(2,4)),b="KK-0"+r(10,89);S.pet.push([tt.replace(/^membayar |^membeli /,""),a]);
+return{lbl:"pengisian kembali kas kecil",txt:`Tanggal ${d2} perusahaan mengisi kembali kas kecil sebesar ${rp(s)} dari rekening bank.`,codes:[`Tanggal ${d2}`,`Bukti kas keluar ${bb}`],info:[`Nominal pengisian kembali kas kecil: ${rp(s)}.`],bk:[bb],sh:{payment:{h:{tanggal:d2,bukti:bb,ref:""},r:[pm(Object.assign({cash:T(s)},dA("Petty Cash",s)))]}},steps:[`Nominal pengisian kembali sudah diketahui, yaitu ${rp(s)}. Tidak perlu menjumlahkan transaksi sebelumnya.`,`Pengisian kembali dicatat di Jurnal Pengeluaran Kas: Petty Cash (Others debit) ${rp(s)}; Cash in Bank kredit ${rp(s)}.`]}}
+const[ac,tt,a]=[["Other Operating Expense","membayar konsumsi rapat",r(5,40)*10000],["Store Supplies Expenses","membeli alat tulis kantor (dibebankan)",r(5,45)*10000],["Expense Payable","melunasi tagihan listrik dan air yang sebelumnya sudah dicatat sebagai utang",500000],["Advertising Expenses","membayar cetak brosur promosi",r(10,45)*10000]][i],d=DD(S.day+=r(2,4)),b="KK-0"+r(10,89);S.pet.push([tt.replace(/^membayar |^membeli |^melunasi /,""),a]);
 return{lbl:tt+(a===LIMIT?" (tepat di batas)":""),txt:`Tanggal ${d} ${tt} sebesar ${rp(a)} dari kas kecil.`,codes:[`Tanggal ${d}`,`Bukti kas kecil ${b}`],info:[`Batas pengeluaran kas kecil: ${rp(LIMIT)}. Sampai batas itu (termasuk tepat ${rp(LIMIT)}) dibayar dari kas kecil.`],bk:[b],sh:{petty:{h:{tanggal:d,bukti:b},r:[{akun:ac,accno:an(ac),total:T(a),pc:T(a)}]}},steps:[`${rp(a)} ${a<=LIMIT?"tidak melebihi":"melebihi"} batas ${rp(LIMIT)}, jadi dicatat di Jurnal Kas Kecil.`,`${ac} didebit ${rp(a)} (kolom akun dan total); Petty Cash dikredit ${rp(a)}.`]}});
 /* 8 Pinjaman bank diterima */
 G.push((i,r,S)=>{const gr=r(4,12)*10000000,pc=[0,0,1,.5,0][i],fee=Math.round(gr*pc/100),net=gr-fee,yr=r(1,3),bg=r(9,13),d=DD(S.day+=r(2,4)),b="BKM-0"+r(10,89);
@@ -427,7 +427,7 @@ function gmDevices(){
   const rest=k.slice(11),u=rest.lastIndexOf("_"),nm=rest.slice(0,u).toUpperCase(),kl=rest.slice(u+1);
   const sk=o.sk||{};let ok=0,cur=-1;
   ORD_M.forEach(m=>{let c=0;[0,1,2,3,4].forEach(j=>{const p=o.p[key(m,j)];if((p&&p.ok)||sk[m])c++});ok+=c;if(c<5&&cur<0)cur=m});
-  const g=o.g||{};out.push({name:nm,cls:kl,ok:ok,cur:cur,viol:(g.tot||0)+(g.viol||0),fin:o.fin?o.fin.type:""});
+  const g=o.g||{};out.push({name:nm,cls:kl,storageKey:k,ok:ok,cur:cur,viol:(g.tot||0)+(g.viol||0),fin:o.fin?o.fin.type:""});
  }}catch(e){}
  return out.sort((a,b)=>b.ok-a.ok);
 }
@@ -450,9 +450,18 @@ function gmRender(){
  h+='<div class="gm-sec">Akun lain di perangkat ini</div>';
  if(!dv.length)h+='<p>Belum ada akun lain yang pernah dipakai di perangkat ini.</p>';
  else{h+='<p>Jika siswa berganti nama setelah kena pelanggaran, lihat posisi akun lamanya lalu lanjutkan dari sana.</p>';
-  dv.forEach(d=>{h+='<div class="gm-row"><b>'+esc2(d.name)+' ('+esc2(d.cls)+')</b><small>'+d.ok+'/'+(MAT.length*5)+' soal benar · '+(d.cur>=0?'materi saat ini: '+(posM(d.cur)+1)+'. '+esc2(MAT[d.cur][1]):'semua materi selesai')+' · pelanggaran '+d.viol+(d.fin==="auto"?' · sesi versi lama pernah dihentikan otomatis':'')+'</small>'+(d.cur>=0?'<div class="gm-b"><button class="go" onclick="gmJump('+d.cur+')">Lanjutkan dari materi '+(posM(d.cur)+1)+'</button></div>':'')+'</div>'});}
+  dv.forEach(d=>{const sk=encodeURIComponent(d.storageKey);h+='<div class="gm-row"><b>'+esc2(d.name)+' ('+esc2(d.cls)+')</b><small>'+d.ok+'/'+(MAT.length*5)+' soal benar · '+(d.cur>=0?'materi saat ini: '+(posM(d.cur)+1)+'. '+esc2(MAT[d.cur][1]):'semua materi selesai')+' · pelanggaran '+d.viol+(d.fin==="auto"?' · sesi versi lama pernah dihentikan otomatis':'')+'</small><div class="gm-b">'+(d.cur>=0?'<button class="go" onclick="gmJump('+d.cur+')">Lanjutkan dari materi '+(posM(d.cur)+1)+'</button>':'')+'<button class="rd" onclick="gmDeleteAccount(\''+sk+'\')">Hapus akun</button></div></div>'});}
  h+='<div class="gm-act" style="margin-top:12px"><button class="btn" onclick="gmClose()">Tutup</button></div>';
  b.innerHTML=h;
+}
+function gmDeleteAccount(encodedKey){
+ const storageKey=decodeURIComponent(encodedKey||"");
+ const rest=storageKey.slice(11),splitAt=rest.lastIndexOf("_"),displayName=(splitAt>0?rest.slice(0,splitAt):"akun ini").toUpperCase();
+ if(!storageKey||storageKey.indexOf("belajarLM2_")!==0){alert("Akun tidak dapat dihapus karena kunci penyimpanannya tidak valid.");return}
+ if(storageKey===gxKey()){alert("Akun yang sedang digunakan tidak dapat dihapus dari daftar ini.");return}
+ if(!confirm("Hapus seluruh data akun "+displayName+" dari perangkat ini? Progres, jawaban, nilai, dan catatan pelanggaran akun ini akan hilang. Nama yang sama bisa digunakan lagi untuk mulai dari awal."))return;
+ try{localStorage.removeItem(storageKey)}catch(e){alert("Akun gagal dihapus dari penyimpanan perangkat.");return}
+ gmRender();
 }
 function gmReopen(){
  if(ST.fin){delete ST.fin;GM.restart=true}
