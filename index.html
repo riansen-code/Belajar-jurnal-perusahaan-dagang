@@ -559,7 +559,7 @@ doCheck=function(){const m=V.m,k=key(V.m,V.i);ST.tc=ST.tc||{};ST.tc[k]=(ST.tc[k]
 (function(){
 const GUARD_ON=true,SHORT_SECONDS=10,SHORT_MS=SHORT_SECONDS*1000;
 if(!GUARD_ON){window.gdStart=function(){};window.gdStop=function(){};return}
-let active=false,wasFs=false,wl=null,vid=null,away=null,hbT=null,rz=null,tt=null;
+let active=false,wasFs=false,wl=null,vid=null,away=null,hbT=null,rz=null,tt=null,fsTick=null,fsDeadline=0,fsCounted=false;
 const root=document.documentElement,$g=id=>document.getElementById(id),G=()=>ST.g||(ST.g={viol:0,stot:0,log:[],hist:[]});
 const UA=navigator.userAgent||"",isIOS=/iPad|iPhone|iPod/.test(UA)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
 const fsSupported=!!(root.requestFullscreen||root.webkitRequestFullscreen)&&document.fullscreenEnabled!==false&&document.webkitFullscreenEnabled!==false;
@@ -567,8 +567,21 @@ const isFs=()=>!!(document.fullscreenElement||document.webkitFullscreenElement);
 const clock=()=>new Date().toLocaleString("id-ID");
 function updBadge(){const b=$g("gdBadge");if(b)b.textContent="Pantauan ujian · indikasi "+(G().viol||0)+" · gangguan singkat "+(G().stot||0)}
 function build(){
- if($g("gdBadge"))return;
- const bd=document.createElement("div");bd.id="gdBadge";document.body.appendChild(bd);
+ if(!$g("gdBadge")){const bd=document.createElement("div");bd.id="gdBadge";document.body.appendChild(bd)}
+ if(!$g("gdReturn")){
+  const st=document.createElement("style");st.textContent="#gdReturn{position:fixed;right:12px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:99990;display:none;background:#b42318;color:#fff;border:2px solid #fff;border-radius:14px;padding:13px 17px;font:800 15px system-ui;box-shadow:0 4px 18px #0008}#gdFsWarn{position:fixed;inset:0;z-index:99989;display:none;align-items:center;justify-content:center;background:#111c;color:#fff;padding:20px;text-align:center;font-family:system-ui}#gdFsWarn.on{display:flex}#gdFsCard{width:min(440px,96%);background:#8f1d16;border:3px solid #fff;border-radius:20px;padding:24px 18px;box-shadow:0 8px 30px #0009}#gdFsNum{font-size:clamp(58px,16vw,88px);font-weight:900;line-height:1.05;margin:8px 0}#gdFsWarn button{background:#ffdf70;color:#241b00;border:0;border-radius:12px;padding:15px 18px;font-size:17px;font-weight:900;width:100%;margin-top:12px}";
+  document.head.appendChild(st);
+  const btn=document.createElement("button");btn.id="gdReturn";btn.textContent="↗ KEMBALI KE LAYAR PENUH";btn.onclick=()=>enterFs();document.body.appendChild(btn);
+  const w=document.createElement("div");w.id="gdFsWarn";w.innerHTML='<div id="gdFsCard"><div style="font-size:22px;font-weight:900">⚠️ LAYAR PENUH TERLEPAS</div><div id="gdFsNum">30</div><div style="font-size:16px;font-weight:700">Segera kembali ke layar penuh!</div><button id="gdFsBtn" type="button">KEMBALI KE LAYAR PENUH</button></div>';document.body.appendChild(w);
+  $g("gdFsBtn").onclick=()=>enterFs();
+ }
+}
+function stopFsCountdown(){clearInterval(fsTick);fsTick=null;fsDeadline=0;const w=$g("gdFsWarn"),b=$g("gdReturn");if(w)w.classList.remove("on");if(b)b.style.display="none"}
+function startFsCountdown(){
+ if(fsTick||!active||ST.fin)return;build();fsCounted=false;fsDeadline=Date.now()+30000;
+ const w=$g("gdFsWarn"),b=$g("gdReturn");w.classList.add("on");b.style.display="block";
+ const tick=()=>{const left=Math.max(0,Math.ceil((fsDeadline-Date.now())/1000));const n=$g("gdFsNum");if(n)n.textContent=left;if(left===0&&!fsCounted){fsCounted=true;logIndication("tidak kembali ke layar penuh dalam 30 detik",30)}};
+ tick();fsTick=setInterval(tick,250);
 }
 function logShort(why,seconds){
  const g=G();g.stot=(g.stot||0)+1;gxLog(clock()+" gangguan singkat "+seconds+" detik ("+why+"), tidak dihitung sebagai indikasi");save();updBadge();toast("Gangguan singkat tercatat");
@@ -600,13 +613,13 @@ function examStart(){
  enterFs();startHb();
 }
 function examEnd(){
- if(!active)return;active=false;clearInterval(hbT);if(away){clearTimeout(away.tm);away=null}
+ if(!active)return;active=false;stopFsCountdown();clearInterval(hbT);if(away){clearTimeout(away.tm);away=null}
  G().active="0";G().hb=Date.now();save();document.body.classList.remove("gd-on");
  const b=$g("gdBadge");if(b)b.style.display="none";
  try{if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen();else if(document.webkitFullscreenElement&&document.webkitExitFullscreen)document.webkitExitFullscreen()}catch(e){}
  try{if(wl){wl.release();wl=null}}catch(e){}try{if(vid)vid.pause()}catch(e){}
 }
-function onFs(){if(!active)return;if(isFs()){wasFs=true;checkReturn()}else if(wasFs)startAway("keluar dari layar penuh")}
+function onFs(){if(!active)return;if(isFs()){wasFs=true;stopFsCountdown();checkReturn()}else if(wasFs)startFsCountdown()}
 window.gdStart=examStart;window.gdStop=examEnd;
 document.addEventListener("visibilitychange",()=>{if(document.hidden){if(active){G().hb=Date.now();try{save()}catch(e){}}startAway("berpindah tab atau aplikasi")}else checkReturn()});
 window.addEventListener("focus",checkReturn);
@@ -614,7 +627,7 @@ window.addEventListener("offline",()=>{if(active&&!ST.fin){gxLog(clock()+" konek
 window.addEventListener("online",()=>{if(active&&!ST.fin){gxLog(clock()+" koneksi internet kembali online");save()}});
 window.addEventListener("pageshow",()=>{if(active)checkReturn()});
 window.addEventListener("pagehide",()=>{if(active&&!ST.fin){startAway("halaman ditutup atau berpindah");G().hb=Date.now();G().active="1";try{gxLog(clock()+" halaman ditutup atau berpindah; menunggu sesi kembali");save()}catch(e){}}});
-window.addEventListener("blur",()=>{setTimeout(()=>{if(!document.hasFocus())startAway("jendela ujian kehilangan fokus")},400)});
+window.addEventListener("blur",()=>{setTimeout(()=>{if(!document.hasFocus()&&!(active&&wasFs&&!isFs()))startAway("jendela ujian kehilangan fokus")},400)});
 document.addEventListener("fullscreenchange",onFs);document.addEventListener("webkitfullscreenchange",onFs);
 document.addEventListener("click",()=>{if(active&&!ST.fin)checkReturn()},true);
 // Tombol kembali, refresh, menu, dan pemilihan teks tidak diblokir; yang terdeteksi hanya dicatat.
