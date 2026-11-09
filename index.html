@@ -26,7 +26,21 @@ body.gd-on{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 #mdDone{position:fixed;top:0;left:0;right:0;bottom:0;z-index:9400;background:#0f2e2ae6;display:none;align-items:flex-start;justify-content:center;padding:16px;overflow:auto}#mdDone.on{display:flex}
 .md-box{max-width:440px;width:100%;background:#fff;border-radius:18px;padding:20px;color:var(--ink);margin:auto}
 .md-box h2{margin:4px 0 2px;color:var(--green);font-size:20px}.md-box .table-wrap{margin:12px 0 8px}.md-box table{min-width:0}.md-box .btn{width:100%;padding:12px}.md-box .col{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+#rotOv{display:none;position:fixed;inset:0;z-index:99999;background:#0f2e2a;color:#fff;text-align:center;align-items:center;justify-content:center;padding:24px}#rotOv h2{margin:6px 0 8px;font-size:20px}#rotOv p{margin:0;font-size:13.5px;line-height:1.5;opacity:.9;max-width:340px}
+@media (orientation:landscape) and (pointer:coarse) and (max-height:560px){#rotOv{display:flex}}
+#gmOv{display:none;position:fixed;inset:0;z-index:99990;background:rgba(10,30,26,.74);align-items:flex-start;justify-content:center;overflow:auto;padding:14px}#gmOv.on{display:flex}
+.gm-box{background:#fff;border-radius:16px;max-width:540px;width:100%;padding:16px;margin:auto;color:#172522;font-size:14px}
+.gm-box h3{margin:0 0 4px;font-size:18px;color:#123c35}.gm-box p{margin:4px 0 8px;color:#5d6f69;font-size:13px;line-height:1.45}
+.gm-box input[type=password]{width:100%;padding:11px;border:1.5px solid #cfdcd6;border-radius:10px;font:inherit;margin:6px 0}
+.gm-act{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.gm-act .btn{flex:1;min-width:120px}
+.gm-sec{margin:14px 0 6px;font-weight:700;color:#1e8a6e;font-size:12px;letter-spacing:.04em;text-transform:uppercase}
+.gm-row{border:1px solid #d6e2dc;border-radius:12px;padding:9px 10px;margin:6px 0;background:#fafcfb}
+.gm-row b{display:block}.gm-row small{color:#5d6f69}.gm-row .gm-b{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+.gm-b button{border:1.5px solid #cfdcd6;background:#fff;border-radius:9px;padding:7px 10px;font:inherit;font-size:12.5px;font-weight:700;cursor:pointer}
+.gm-b button.go{background:#123c35;color:#fff;border-color:#123c35}.gm-b button.rd{background:#fff3e0;border-color:#e8b84a;color:#7a5400}
+#gmErr{color:#b83a3a;font-size:12.5px;min-height:1em}
 </style><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script></head><body class="nologin">
+<div id="rotOv"><div><div style="font-size:54px">📱</div><h2>Putar HP ke posisi tegak</h2><p>Aplikasi ini hanya bisa dipakai dengan layar tegak (portrait). Matikan kunci rotasi layar bila perlu, lalu tegakkan HP.</p></div></div>
 <div id="gxLogin"><div class="gx-card"><div class="gx-logo">LM</div><h2>Belajar Transaksi Perusahaan Dagang</h2><p class="hint">UD Lestari Makmur · latihan per jenis transaksi</p>
 <div class="field"><label>Nama lengkap</label><input id="gxName" placeholder="KETIK NAMA LENGKAP" autocomplete="off" autocapitalize="characters" spellcheck="false" style="text-transform:uppercase;font-weight:600" oninput="var a=this.selectionStart,b=this.selectionEnd;this.value=this.value.toUpperCase().replace(/[^A-Z .,'\-]/g,'');this.setSelectionRange(a,b)" onkeydown="if(event.key==='Enter')gxLogin()"></div>
 <div class="field"><label>Kelas</label><select id="gxClass"><option value="XII AK" selected>XII AK</option></select></div>
@@ -200,12 +214,12 @@ el.querySelectorAll("[data-key]").forEach(e=>{const m=e.dataset.key.match(/_(\d+
 let ST={p:{},a:{},v:{},g:{viol:0,log:[]}};
 const save=()=>{try{localStorage.setItem(gxKey(),JSON.stringify(ST))}catch(e){}},key=(m,i)=>m+"_"+i,vr=m=>ST.v["m"+m]||0,akey=m=>m+"_"+vr(m);
 let V={home:true,m:null,i:null,tab:0,chk:null,pem:false};
-const status=(m,i)=>{const p=ST.p[key(m,i)];return p?(p.ok?"ok":"try"):""},esc2=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const status=(m,i)=>{if(ST.sk&&ST.sk[m])return"ok";const p=ST.p[key(m,i)];return p?(p.ok?"ok":"try"):""},esc2=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const cur=()=>{const ch=chain(V.m,vr(V.m));return{ch,sc:ch.cs[V.i],UA:ST.a[akey(V.m)]=ST.a[akey(V.m)]||{}}};
 function header(t,s,tag){$("#sheetHeader").innerHTML=`<div><h2>${t}</h2><p>${s}</p></div><span class="tag">${tag}</span>`}
 function home(){const tot=MAT.length*5,ok=MAT.reduce((a,_,m)=>a+[0,1,2,3,4].filter(i=>status(m,i)==="ok").length,0),grp=[...new Set(ORD_M.map(m=>MAT[m][2]))];header("Pilih materi",`${ok} dari ${tot} soal sudah benar`,"BELAJAR");
-return`<div class="notice"><b>Kerjakan per materi, berurutan.</b> Materi berikutnya terbuka setelah kelima soal materi sebelumnya benar semua. Setiap materi yang selesai menghasilkan nilai dan laporan yang bisa diunduh.<br><br>Tiap materi punya 5 soal berurutan. Lembar kerja dilanjutkan dari soal ke soal (baris sebelumnya tetap terlihat), dan hanya lembar yang terpengaruh transaksi yang ditampilkan.<details style="margin-top:8px"><summary><b>Aturan yang dipakai di semua soal</b></summary><ul><li>PPN 11%. Persediaan perpetual FIFO.</li><li>Termin 2/10, n/30: potongan 2% bila dibayar dalam 10 hari sejak tanggal faktur (hari faktur = hari ke-0; hari ke-10 masih berlaku), selebihnya bayar penuh paling lambat hari ke-30.</li><li>Potongan hanya untuk pelunasan penuh, dihitung dari total faktur (termasuk PPN bila ada).</li><li>Pengeluaran sampai ${rp(LIMIT)} dari kas kecil; di atasnya lewat bank (Jurnal Pengeluaran Kas).</li><li>HPP, retur, dan koreksi dicatat di Jurnal Umum. Tulis tanggal format dd/mm/yyyy dan pilih No. Bukti serta Ref sesuai soal.</li><li>Total, nomor akun, dan rekapitulasi akhir bulan tidak diisi di latihan ini.</li></ul></details></div><div class="bottom-actions" style="margin:0 0 10px"><button class="btn" onclick="openTB()">📒 Neraca Saldo (nomor akun)</button><button class="btn" onclick="openKunci()">🔐 Kunci Jawaban</button><button class="btn" onclick="gxProg()">📊 Lihat progres</button><button class="btn" onclick="gxExit()">🚪 Keluar &amp; simpan</button></div>
-${grp.map(g=>`<div class="section-title">${g}</div><div class="nav-list">${ORD_M.map(m=>{const x=MAT[m];return x[2]===g?(mdUnlocked(m)?`<button class="nav" onclick="openM(${m})"><span class="n">${MD()[m]?"✓":x[0]}</span><span class="label">${x[1]} (${[0,1,2,3,4].filter(i=>status(m,i)==="ok").length}/5)${MD()[m]?" · nilai "+MD()[m].score:""}</span></button>`:`<button class="nav" disabled style="opacity:.5;cursor:not-allowed"><span class="n">🔒</span><span class="label">${x[1]} (terkunci)</span></button>`):""}).join("")}</div>`).join("")}
+return`<div class="notice"><b>Kerjakan per materi, berurutan.</b> Materi berikutnya terbuka setelah kelima soal materi sebelumnya benar semua. Setiap materi yang selesai menghasilkan nilai dan laporan yang bisa diunduh.<br><br>Tiap materi punya 5 soal berurutan. Lembar kerja dilanjutkan dari soal ke soal (baris sebelumnya tetap terlihat), dan hanya lembar yang terpengaruh transaksi yang ditampilkan.<details style="margin-top:8px"><summary><b>Aturan yang dipakai di semua soal</b></summary><ul><li>PPN 11%. Persediaan perpetual FIFO.</li><li>Termin 2/10, n/30: potongan 2% bila dibayar dalam 10 hari sejak tanggal faktur (hari faktur = hari ke-0; hari ke-10 masih berlaku), selebihnya bayar penuh paling lambat hari ke-30.</li><li>Potongan hanya untuk pelunasan penuh, dihitung dari total faktur (termasuk PPN bila ada).</li><li>Pengeluaran sampai ${rp(LIMIT)} dari kas kecil; di atasnya lewat bank (Jurnal Pengeluaran Kas).</li><li>HPP, retur, dan koreksi dicatat di Jurnal Umum. Tulis tanggal format dd/mm/yyyy dan pilih No. Bukti serta Ref sesuai soal.</li><li>Total, nomor akun, dan rekapitulasi akhir bulan tidak diisi di latihan ini.</li></ul></details></div><div class="bottom-actions" style="margin:0 0 10px"><button class="btn" onclick="openTB()">📒 Neraca Saldo (nomor akun)</button><button class="btn" onclick="openKunci()">🔐 Kunci Jawaban</button><button class="btn" onclick="gxProg()">📊 Lihat progres</button><button class="btn" onclick="gxExit()">🚪 Keluar &amp; simpan</button><button class="btn" onclick="gmOpen()">🔑 Menu guru</button></div>
+${grp.map(g=>`<div class="section-title">${g}</div><div class="nav-list">${ORD_M.map(m=>{const x=MAT[m];return x[2]===g?(ST.sk&&ST.sk[m]?`<button class="nav" disabled style="opacity:.65;cursor:not-allowed"><span class="n">↷</span><span class="label">${x[1]} (dilewati oleh guru)</span></button>`:mdUnlocked(m)?`<button class="nav" onclick="openM(${m})"><span class="n">${MD()[m]?"✓":x[0]}</span><span class="label">${x[1]} (${[0,1,2,3,4].filter(i=>status(m,i)==="ok").length}/5)${MD()[m]?" · nilai "+MD()[m].score:""}</span></button>`:`<button class="nav" disabled style="opacity:.5;cursor:not-allowed"><span class="n">🔒</span><span class="label">${x[1]} (terkunci)</span></button>`):""}).join("")}</div>`).join("")}
 <p class="hint" style="text-align:center;margin-top:16px"><a href="#" onclick="if(confirm('Hapus semua progres dan jawaban?')){ST={p:{},a:{},v:{},md:{},un:{},mr:{},tc:{},g:ST.g,t0:ST.t0};assignVar();render()}return false">Hapus progres</a></p>`}
 function materi(m){const x=MAT[m],ch=chain(m,vr(m));header(x[0]+" "+x[1],"Baca ringkasan, lalu kerjakan soal berurutan","MATERI");return`<div class="bottom-actions" style="margin:0 0 10px"><button class="btn" onclick="goHome()">← Semua materi</button></div>${mdBanner(m)}<div class="notice"><ul>${x[3].map(t=>`<li>${t}</li>`).join("")}</ul></div><div class="section-title">Soal latihan</div><div class="nav-list">${ch.cs.map((sc,i)=>{const s=status(m,i);if(i>0&&s!=="ok"&&status(m,i-1)!=="ok")return`<button class="nav" disabled style="opacity:.5;cursor:not-allowed"><span class="n">🔒</span><span class="label"><b>Soal ${i+1}</b> · terkunci<br><small>Benarkan Soal ${i} dulu</small></span></button>`;return`<button class="nav" onclick="openS(${m},${i})"><span class="n">${s==="ok"?"✓":i+1}</span><span class="label"><b>Soal ${i+1}</b> · ${esc2(sc.lbl)}<br><small>Lembar: ${sc.ord.map(k=>CFG[k].n).join(", ")}</small></span></button>`}).join("")}</div>`}
 function soal(){const{m,i}=V,{sc}=cur(),c=V.chk,allok=c&&sc.ord.every(k=>!c[k].length);header(`${MAT[m][1]} · Soal ${i+1}`,esc2(sc.lbl),c?(allok?"✓ BENAR":"PERIKSA LAGI"):"SOAL "+(i+1)+"/5");
@@ -271,7 +285,7 @@ function gxLines(){
  L.push("RINGKASAN","Soal benar        : "+S.ok+" / "+S.tot+" ("+pct+"%)","Soal dicoba       : "+S.tr+" / "+S.tot,"Total percobaan   : "+S.tries,"Pelanggaran layar : "+(g.viol||0)+" kali");
  (g.log||[]).forEach(x=>L.push("   - "+x));
  L.push("","PROGRES PER MATERI");
- S.per.forEach(p=>L.push((posM(p.m)+1)+". "+p.name+" : "+p.ok+"/5 benar, dicoba "+p.tr+"/5, percobaan "+p.tries+"x"+(p.score!=null?", NILAI "+p.score:"")));const sc_=S.per.filter(p=>p.score!=null);if(sc_.length)L.push("","Rata-rata nilai materi selesai : "+Math.round(sc_.reduce((a,p)=>a+p.score,0)/sc_.length)+" ("+sc_.length+" materi)");
+ S.per.forEach(p=>L.push((posM(p.m)+1)+". "+p.name+" : "+p.ok+"/5 benar, dicoba "+p.tr+"/5, percobaan "+p.tries+"x"+(p.score!=null?", NILAI "+p.score:"")+(ST.sk&&ST.sk[p.m]?" (DILEWATI OLEH GURU)":"")));const sc_=S.per.filter(p=>p.score!=null);if(sc_.length)L.push("","Rata-rata nilai materi selesai : "+Math.round(sc_.reduce((a,p)=>a+p.score,0)/sc_.length)+" ("+sc_.length+" materi)");
  return L;
 }
 function gxTXT(){
@@ -314,10 +328,10 @@ function progView(){
  $("#sheetBody").innerHTML=`<div class="welcome" style="margin-bottom:14px"><div><span class="pill">${f?"HASIL AKHIR":"PROGRES SAAT INI"}</span><h2>${esc2(ME.name)}</h2><p>${esc2(ME.cls)} · ${esc2(gxStatusTxt())}</p></div><div class="student-chip"><small>Soal benar</small><strong>${S.ok} / ${S.tot} (${pct}%)</strong></div></div>
 <div class="stats"><div class="stat"><span>Soal benar</span><strong>${S.ok}/${S.tot}</strong></div><div class="stat"><span>Sudah dicoba</span><strong>${S.tr}/${S.tot}</strong></div><div class="stat"><span>Total percobaan</span><strong>${S.tries}</strong></div></div>
 <div class="section-title">Progres per materi</div>
-${S.per.map(p=>`<div style="margin:0 0 11px"><div style="display:flex;justify-content:space-between;gap:8px;font-size:12.5px"><span><b>${esc2(p.code)}</b> ${esc2(p.name)}</span><span>${p.ok}/5 benar · ${p.tries}x coba${p.score!=null?" · <b>nilai "+p.score+"</b>":""}${MD()[p.m]?' · <a href="#" onclick="mdPDF(MD()['+p.m+']);return false">PDF</a> · <a href="#" onclick="mdTXT(MD()['+p.m+']);return false">TXT</a>':""}</span></div><div class="pbar" style="margin:5px 0 0"><i style="width:${p.ok*20}%"></i></div></div>`).join("")}
+${S.per.map(p=>`<div style="margin:0 0 11px"><div style="display:flex;justify-content:space-between;gap:8px;font-size:12.5px"><span><b>${esc2(p.code)}</b> ${esc2(p.name)}</span><span>${p.ok}/5 benar · ${p.tries}x coba${ST.sk&&ST.sk[p.m]?" · <b>dilewati guru</b>":""}${p.score!=null?" · <b>nilai "+p.score+"</b>":""}${MD()[p.m]?' · <a href="#" onclick="mdPDF(MD()['+p.m+']);return false">PDF</a> · <a href="#" onclick="mdTXT(MD()['+p.m+']);return false">TXT</a>':""}</span></div><div class="pbar" style="margin:5px 0 0"><i style="width:${p.ok*20}%"></i></div></div>`).join("")}
 ${f||S.ok>=S.tot?"":`<div class="notice">Sesi baru bisa diakhiri setelah semua ${MAT.length} materi selesai (${S.ok}/${S.tot} soal benar).</div>`}<div class="section-title">Informasi sesi</div>
 <div class="notice">Mulai: ${esc2(gxFmt(ST.t0))}<br>Selesai: ${f?esc2(gxFmt(f.t)):"-"}<br>Pelanggaran layar: <b>${gxViol()}</b> kali${((g.all||[]).concat(g.log||[])).length?"<br><small>"+(g.all||[]).concat(g.log||[]).map(esc2).join("<br>")+"</small>":""}</div>
-<div class="bottom-actions" style="margin-top:6px">${f?"":`<button class="btn" onclick="goHome()">← Kembali belajar</button><button class="btn gold" ${S.ok>=S.tot?"":"disabled"} onclick="gxEnd()">${S.ok>=S.tot?"":"🔒 "}Akhiri sesi &amp; kumpulkan progres</button>`}<button class="btn primary" onclick="gxPDF()">⬇ Unduh PDF</button><button class="btn" onclick="gxTXT()">⬇ Unduh TXT</button></div>
+<div class="bottom-actions" style="margin-top:6px">${f?"":`<button class="btn" onclick="goHome()">← Kembali belajar</button><button class="btn gold" ${S.ok>=S.tot?"":"disabled"} onclick="gxEnd()">${S.ok>=S.tot?"":"🔒 "}Akhiri sesi &amp; kumpulkan progres</button>`}<button class="btn primary" onclick="gxPDF()">⬇ Unduh PDF</button><button class="btn" onclick="gxTXT()">⬇ Unduh TXT</button><button class="btn" onclick="gmOpen()">🔑 Menu guru</button></div>
 ${f?`<details class="gx-t"><summary>Guru: buka kembali sesi</summary><div class="key-lock" style="margin-top:8px"><input id="gxPw" type="password" autocomplete="off" placeholder="Password guru"><button class="btn" onclick="gxReopen()">Buka kembali sesi</button><p id="gxPwErr" class="key-err"></p></div></details>`:""}`;
 }
 function gxLogin(){
@@ -386,6 +400,90 @@ function gxExit(){
  ST={};const k=ME.cls;ME={name:"",cls:k};
  document.body.classList.add("nologin");const L=gxById("gxLogin");L.style.display="";gxById("gxName").value="";
  const sb=document.getElementById("sheetBody");if(sb)sb.innerHTML="";window.scrollTo(0,0)}
+
+/* ===== MENU GURU: lompat materi, ulangi materi, reset pelanggaran ===== */
+const GM={open:false};
+const gmReal=m=>[0,1,2,3,4].every(i=>{const p=ST.p[key(m,i)];return p&&p.ok});
+function gxSendEv(aksi,detail){
+ if(!GX_URL)return;
+ try{fetch(GX_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({tipe:"guru",aksi:aksi,detail:detail,name:ME.name,className:ME.cls,waktu:new Date().toISOString()})}).catch(()=>{})}catch(e){}
+}
+function gmEnsure(){if(document.getElementById("gmOv"))return;const d=document.createElement("div");d.id="gmOv";d.innerHTML='<div class="gm-box" id="gmBox"></div>';document.body.appendChild(d)}
+function gmOpen(){gmEnsure();GM.open=false;gmRender();document.getElementById("gmOv").classList.add("on")}
+function gmClose(){GM.open=false;const o=document.getElementById("gmOv");if(o)o.classList.remove("on")}
+function gmUnlock(){
+ const pw=document.getElementById("gmPw").value.trim(),er=document.getElementById("gmErr");
+ if(!pw){er.textContent="Masukkan password guru.";return}
+ if(cyrb(pw,11)!==KEYH){er.textContent="Password salah.";return}
+ GM.open=true;gmRender();
+}
+function gmDevices(){
+ const out=[],mine=gxKey();
+ try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);
+  if(!k||k.indexOf("belajarLM2_")!==0||k===mine)continue;
+  let o;try{o=JSON.parse(localStorage.getItem(k))}catch(e){continue}
+  if(!o||!o.p)continue;
+  const rest=k.slice(11),u=rest.lastIndexOf("_"),nm=rest.slice(0,u).toUpperCase(),kl=rest.slice(u+1);
+  const sk=o.sk||{};let ok=0,cur=-1;
+  ORD_M.forEach(m=>{let c=0;[0,1,2,3,4].forEach(j=>{const p=o.p[key(m,j)];if((p&&p.ok)||sk[m])c++});ok+=c;if(c<5&&cur<0)cur=m});
+  const g=o.g||{};out.push({name:nm,cls:kl,ok:ok,cur:cur,viol:(g.tot||0)+(g.viol||0),fin:o.fin?o.fin.type:""});
+ }}catch(e){}
+ return out.sort((a,b)=>b.ok-a.ok);
+}
+function gmRender(){
+ const b=document.getElementById("gmBox");if(!b)return;
+ if(!GM.open){
+  b.innerHTML='<h3>Menu guru</h3><p>Masukkan password guru untuk melompat materi, mengulang materi, atau mereset pelanggaran siswa ini.</p><input id="gmPw" type="password" autocomplete="off" placeholder="Password guru" onkeydown="if(event.key===\'Enter\')gmUnlock()"><div id="gmErr"></div><div class="gm-act"><button class="btn primary" onclick="gmUnlock()">Buka</button><button class="btn" onclick="gmClose()">Batal</button></div>';
+  setTimeout(()=>{const i=document.getElementById("gmPw");if(i)i.focus()},50);return;
+ }
+ const g=ST.g||{};
+ let h='<h3>Menu guru</h3><p><b>'+esc2(ME.name)+'</b> · '+esc2(ME.cls)+'<br>Pelanggaran layar: <b>'+gxViol()+'</b> kali'+(ST.fin?' · '+esc2(gxStatusTxt()):'')+'</p>';
+ h+='<div class="gm-sec">Pilih materi</div><p>Mulai dari sini: materi sebelumnya yang belum selesai ditandai <i>dilewati oleh guru</i>. Ulangi: jawaban materi dihapus dan angka soal diganti baru.</p>';
+ ORD_M.forEach((m,k)=>{
+  const x=MAT[m],real=gmReal(m),sk=ST.sk&&ST.sk[m],n=[0,1,2,3,4].filter(i=>{const p=ST.p[key(m,i)];return p&&p.ok}).length,tr=[0,1,2,3,4].some(i=>ST.p[key(m,i)]);
+  const st=sk?'Dilewati oleh guru':real?('Selesai'+(MD()[m]?' · nilai '+MD()[m].score:'')):tr?('Sedang dikerjakan · '+n+'/5 benar'):(mdUnlocked(m)?'Belum dimulai':'Terkunci');
+  h+='<div class="gm-row"><b>'+(k+1)+'. '+esc2(x[1])+'</b><small>'+esc2(x[2])+' · '+st+'</small><div class="gm-b">'+(real&&!sk?'':'<button class="go" onclick="gmJump('+m+')">Mulai dari sini</button>')+((tr||sk||MD()[m])?'<button class="rd" onclick="gmRedo('+m+')">Ulangi materi</button>':'')+'</div></div>';
+ });
+ h+='<div class="gm-sec">Pelanggaran</div><div class="gm-row"><small>Total pelanggaran siswa ini: <b>'+gxViol()+'</b> kali.</small><div class="gm-b"><button class="go" onclick="gmReset()">Reset pelanggaran'+(ST.fin?' &amp; buka kembali sesi':'')+'</button></div></div>';
+ const dv=gmDevices();
+ h+='<div class="gm-sec">Akun lain di perangkat ini</div>';
+ if(!dv.length)h+='<p>Belum ada akun lain yang pernah dipakai di perangkat ini.</p>';
+ else{h+='<p>Jika siswa berganti nama setelah kena pelanggaran, lihat posisi akun lamanya lalu lanjutkan dari sana.</p>';
+  dv.forEach(d=>{h+='<div class="gm-row"><b>'+esc2(d.name)+' ('+esc2(d.cls)+')</b><small>'+d.ok+'/'+(MAT.length*5)+' soal benar · '+(d.cur>=0?'materi saat ini: '+(posM(d.cur)+1)+'. '+esc2(MAT[d.cur][1]):'semua materi selesai')+' · pelanggaran '+d.viol+(d.fin==="auto"?' · sesi diakhiri otomatis':'')+'</small>'+(d.cur>=0?'<div class="gm-b"><button class="go" onclick="gmJump('+d.cur+')">Lanjutkan dari materi '+(posM(d.cur)+1)+'</button></div>':'')+'</div>'});}
+ h+='<div class="gm-act" style="margin-top:12px"><button class="btn" onclick="gmClose()">Tutup</button></div>';
+ b.innerHTML=h;
+}
+function gmReopen(){
+ if(ST.fin){delete ST.fin;GM.restart=true}
+ ST.g=ST.g||{};ST.g.viol=0;
+}
+function gmAfter(msg){
+ (ST.g.log=ST.g.log||[]).push(new Date().toLocaleTimeString("id-ID")+" "+msg);
+ save();gmClose();V={home:true,m:null,i:null,tab:0,chk:null,pem:false};render();
+ if(GM.restart&&!ST.fin&&window.gdStart){GM.restart=false;window.gdStart()}
+}
+function gmJump(m){
+ if(!confirm("Lompat ke materi "+(posM(m)+1)+" ("+MAT[m][1]+")?\nMateri sebelumnya yang belum selesai ditandai dilewati oleh guru."))return;
+ ST.sk=ST.sk||{};
+ ORD_M.slice(0,posM(m)).forEach(mm=>{if(!gmReal(mm)&&!ST.sk[mm])ST.sk[mm]={t:new Date().toISOString()}});
+ ORD_M.slice(posM(m)).forEach(mm=>{delete ST.sk[mm]});
+ ST.un=ST.un||{};ST.un[m]=1;gmReopen();
+ gxSendEv("lompat","materi "+(posM(m)+1)+" "+MAT[m][1]);
+ gmAfter("guru: lompat ke materi "+(posM(m)+1));
+}
+function gmRedo(m){
+ if(!confirm("Ulangi materi "+(posM(m)+1)+" ("+MAT[m][1]+")?\nJawaban materi ini dihapus dan angka soal diganti."))return;
+ const ak=akey(m);
+ [0,1,2,3,4].forEach(i=>{delete ST.p[key(m,i)];if(ST.tc)delete ST.tc[key(m,i)]});
+ delete ST.a[ak];delete MD()[m];if(ST.sk)delete ST.sk[m];
+ ST.v["m"+m]=vr(m)+1;ST.un=ST.un||{};ST.un[m]=1;gmReopen();
+ gxSendEv("ulang","materi "+(posM(m)+1)+" "+MAT[m][1]);
+ gmAfter("guru: ulangi materi "+(posM(m)+1));
+}
+function gmReset(){
+ if(!confirm("Reset pelanggaran siswa ini ke 0"+(ST.fin?" dan buka kembali sesi":"")+"?"))return;
+ gmReopen();gxSendEv("reset-pelanggaran","");gmAfter("guru: reset pelanggaran");
+}
 const mdFn=(s,ext)=>"nilai_materi"+(posM(s.m)+1)+"_"+(ME.name+"_"+ME.cls).replace(/[^A-Za-z0-9]+/g,"_")+"."+ext;
 function mdLines(s){
  mdFill(s);
@@ -465,6 +563,7 @@ function updBadge(){const b=$g("gdBadge");if(b)b.textContent="🔒 Mode ujian ·
 async function enterFs(){
  try{if(root.requestFullscreen)await root.requestFullscreen({navigationUI:"hide"});else if(root.webkitRequestFullscreen)root.webkitRequestFullscreen()}catch(e){}
  try{if(navigator.keyboard&&navigator.keyboard.lock)await navigator.keyboard.lock(["Escape"])}catch(e){}
+ try{if(screen.orientation&&screen.orientation.lock)await screen.orientation.lock("portrait")}catch(e){}
 }
 function playNoSleep(){
  try{
@@ -546,6 +645,7 @@ function examEnd(){
  const b=$g("gdBadge");if(b)b.style.display="none";
  try{if(isFs())(document.exitFullscreen||document.webkitExitFullscreen).call(document)}catch(e){}
  try{navigator.keyboard&&navigator.keyboard.unlock&&navigator.keyboard.unlock()}catch(e){}
+ try{screen.orientation&&screen.orientation.unlock&&screen.orientation.unlock()}catch(e){}
  try{if(wl){wl.release();wl=null}}catch(e){}
  try{if(vid)vid.pause()}catch(e){}
 }
