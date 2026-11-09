@@ -45,7 +45,7 @@ body.gd-on{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 <div class="field"><label>Nama lengkap</label><input id="gxName" placeholder="KETIK NAMA LENGKAP" autocomplete="off" autocapitalize="characters" spellcheck="false" style="text-transform:uppercase;font-weight:600" oninput="var a=this.selectionStart,b=this.selectionEnd;this.value=this.value.toUpperCase().replace(/[^A-Z .,'\-]/g,'');this.setSelectionRange(a,b)" onkeydown="if(event.key==='Enter')gxLogin()"></div>
 <div class="field"><label>Kelas</label><select id="gxClass"><option value="XII AK" selected>XII AK</option></select></div>
 <button class="btn primary" onclick="gxLogin()">Mulai belajar</button>
-<div class="rules"><b>Sebelum mulai</b><ul><li>Isi nama sesuai absen. Progres tersimpan atas nama ini di perangkat dan browser ini.</li><li><b>Mode aman:</b> sesi berjalan layar penuh. Keluar dari layar, pindah tab/aplikasi, atau membuka jendela lain akan mengunci layar dan dicatat. Pelanggaran ke-3 mengakhiri sesi dan progres dikumpulkan.</li><li>Setiap selesai satu materi (5 soal benar) kamu mendapat <b>laporan PDF</b> berisi nama, kode soal, dan nilai. Setelah itu kamu boleh menekan <b>Keluar &amp; simpan</b> tanpa dihitung pelanggaran. Login lagi dengan nama yang sama untuk melanjutkan ke materi berikutnya.</li><li>Halaman <b>progres akhir</b> muncul saat semua 60 soal benar. Hasilnya bisa diunduh sebagai PDF atau TXT.</li></ul></div></div></div>
+<div class="rules"><b>Sebelum mulai</b><ul><li>Isi nama sesuai absen. Progres tersimpan atas nama ini di perangkat dan browser ini.</li><li><b>Mode pengawasan:</b> sistem mencatat aktivitas meninggalkan halaman, berpindah aplikasi/tab, keluar dari layar penuh, dan gangguan lain yang dapat dideteksi browser. Durasi kurang dari 10 detik dicatat sebagai gangguan singkat; 10 detik atau lebih dihitung sebagai indikasi. Berapa pun jumlah indikasinya, ujian tetap berjalan: tidak ada penguncian, jeda, atau pengumpulan otomatis. Guru akan meninjau catatan pada laporan. Aktivitas yang tidak dapat diketahui browser tidak akan diklaim terdeteksi.</li><li>Setiap selesai satu materi (5 soal benar) kamu mendapat <b>laporan PDF</b> berisi nama, kode soal, dan nilai. Setelah itu kamu boleh menekan <b>Keluar &amp; simpan</b> tanpa dihitung pelanggaran. Login lagi dengan nama yang sama untuk melanjutkan ke materi berikutnya.</li><li>Halaman <b>progres akhir</b> muncul saat semua 60 soal benar. Hasilnya bisa diunduh sebagai PDF atau TXT.</li></ul></div></div></div>
 <div id="gxDone"><div class="gx-box"><div class="ic">🎉</div><h2>Semua soal sudah benar!</h2><p>Hebat, <b id="gxDoneName"></b>! Seluruh 60 soal sudah kamu selesaikan. Tekan tombol di bawah untuk melihat halaman progres akhir.</p><button onclick="gxFinish('semua')">Lihat progres akhir</button></div></div>
 
 <div id="mdDone"><div class="md-box" id="mdBox"></div></div>
@@ -275,15 +275,15 @@ function gxStatusTxt(){
  const f=ST.fin;
  if(!f)return"Sesi masih berjalan";
  if(f.type==="semua")return"Selesai: semua soal sudah benar";
- if(f.type==="auto")return"Sesi diakhiri otomatis karena pelanggaran layar mencapai "+(window.gdMax||3)+" kali";
+ if(f.type==="auto")return"Sesi lama pernah dihentikan otomatis; periksa riwayat indikasi pada laporan";
  return"Sesi diakhiri oleh siswa";
 }
 function gxLines(){
  const S=gxStat(),g=ST.g||{},pct=Math.round(S.ok/S.tot*100),L=[];
  L.push("LAPORAN PROGRES BELAJAR","Belajar Transaksi Perusahaan Dagang - UD Lestari Makmur","SMK Ma'arif 1 Semaka","");
  L.push("Nama    : "+ME.name,"Kelas   : "+ME.cls,"Status  : "+gxStatusTxt(),"Mulai   : "+gxFmt(ST.t0),"Selesai : "+(ST.fin?gxFmt(ST.fin.t):"-"),"");
- L.push("RINGKASAN","Soal benar        : "+S.ok+" / "+S.tot+" ("+pct+"%)","Soal dicoba       : "+S.tr+" / "+S.tot,"Total percobaan   : "+S.tries,"Pelanggaran layar : "+(g.viol||0)+" kali");
- (g.log||[]).forEach(x=>L.push("   - "+x));
+ L.push("RINGKASAN","Soal benar        : "+S.ok+" / "+S.tot+" ("+pct+"%)","Soal dicoba       : "+S.tr+" / "+S.tot,"Total percobaan   : "+S.tries,"Indikasi aktivitas (10 detik atau lebih) : "+gxViol()+" kali","Gangguan singkat (kurang dari 10 detik) : "+(g.stot||0)+" kali","Tindakan otomatis : Tidak ada penguncian, jeda, atau pengumpulan otomatis karena indikasi.","Catatan : Indikasi adalah catatan aktivitas browser, bukan bukti otomatis kecurangan.");
+ (g.hist||[]).forEach(x=>L.push("   - "+x));
  L.push("","PROGRES PER MATERI");
  S.per.forEach(p=>L.push((posM(p.m)+1)+". "+p.name+" : "+p.ok+"/5 benar, dicoba "+p.tr+"/5, percobaan "+p.tries+"x"+(p.score!=null?", NILAI "+p.score:"")+(ST.sk&&ST.sk[p.m]?" (DILEWATI OLEH GURU)":"")));const sc_=S.per.filter(p=>p.score!=null);if(sc_.length)L.push("","Rata-rata nilai materi selesai : "+Math.round(sc_.reduce((a,p)=>a+p.score,0)/sc_.length)+" ("+sc_.length+" materi)");
  return L;
@@ -303,7 +303,7 @@ function gxPDF(){
 }
 function gxSend(){
  if(!GX_URL)return;
- try{const S=gxStat();fetch(GX_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({latihan:"Belajar Transaksi Perusahaan Dagang",name:ME.name,className:ME.cls,status:gxStatusTxt(),benar:S.ok,total:S.tot,percobaan:S.tries,pelanggaran:gxViol(),log:(ST.g||{}).log||[],mulai:ST.t0,selesai:ST.fin&&ST.fin.t})})}catch(e){}
+ try{const S=gxStat();fetch(GX_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({latihan:"Belajar Transaksi Perusahaan Dagang",name:ME.name,className:ME.cls,status:gxStatusTxt(),benar:S.ok,total:S.tot,percobaan:S.tries,pelanggaran:gxViol(),gangguanSingkat:(ST.g||{}).stot||0,log:(ST.g||{}).hist||[],mulai:ST.t0,selesai:ST.fin&&ST.fin.t})})}catch(e){}
 }
 function gxProg(){V={prog:true,home:false,m:null,i:null,tab:0,chk:null,pem:false};render()}
 function gxEnd(){const S=gxStat();if(S.ok<S.tot){alert("Sesi baru bisa diakhiri setelah semua materi selesai ("+S.ok+"/"+S.tot+" soal benar).");return}if(confirm("Akhiri sesi dan kumpulkan progres? Setelah diakhiri, sesi tidak dapat dilanjutkan tanpa izin guru."))gxFinish("manual")}
@@ -330,7 +330,7 @@ function progView(){
 <div class="section-title">Progres per materi</div>
 ${S.per.map(p=>`<div style="margin:0 0 11px"><div style="display:flex;justify-content:space-between;gap:8px;font-size:12.5px"><span><b>${esc2(p.code)}</b> ${esc2(p.name)}</span><span>${p.ok}/5 benar · ${p.tries}x coba${ST.sk&&ST.sk[p.m]?" · <b>dilewati guru</b>":""}${p.score!=null?" · <b>nilai "+p.score+"</b>":""}${MD()[p.m]?' · <a href="#" onclick="mdPDF(MD()['+p.m+']);return false">PDF</a> · <a href="#" onclick="mdTXT(MD()['+p.m+']);return false">TXT</a>':""}</span></div><div class="pbar" style="margin:5px 0 0"><i style="width:${p.ok*20}%"></i></div></div>`).join("")}
 ${f||S.ok>=S.tot?"":`<div class="notice">Sesi baru bisa diakhiri setelah semua ${MAT.length} materi selesai (${S.ok}/${S.tot} soal benar).</div>`}<div class="section-title">Informasi sesi</div>
-<div class="notice">Mulai: ${esc2(gxFmt(ST.t0))}<br>Selesai: ${f?esc2(gxFmt(f.t)):"-"}<br>Pelanggaran layar: <b>${gxViol()}</b> kali${((g.all||[]).concat(g.log||[])).length?"<br><small>"+(g.all||[]).concat(g.log||[]).map(esc2).join("<br>")+"</small>":""}</div>
+<div class="notice">Mulai: ${esc2(gxFmt(ST.t0))}<br>Selesai: ${f?esc2(gxFmt(f.t)):"-"}<br>Indikasi dihitung: <b>${gxViol()}</b> kali · gangguan singkat (tidak dihitung): <b>${g.stot||0}</b> kali${(g.hist||[]).length?"<br><small>"+(g.hist||[]).map(esc2).join("<br>")+"</small>":""}</div>
 <div class="bottom-actions" style="margin-top:6px">${f?"":`<button class="btn" onclick="goHome()">← Kembali belajar</button><button class="btn gold" ${S.ok>=S.tot?"":"disabled"} onclick="gxEnd()">${S.ok>=S.tot?"":"🔒 "}Akhiri sesi &amp; kumpulkan progres</button>`}<button class="btn primary" onclick="gxPDF()">⬇ Unduh PDF</button><button class="btn" onclick="gxTXT()">⬇ Unduh TXT</button><button class="btn" onclick="gmOpen()">🔑 Menu guru</button></div>
 ${f?`<details class="gx-t"><summary>Guru: buka kembali sesi</summary><div class="key-lock" style="margin-top:8px"><input id="gxPw" type="password" autocomplete="off" placeholder="Password guru"><button class="btn" onclick="gxReopen()">Buka kembali sesi</button><p id="gxPwErr" class="key-err"></p></div></details>`:""}`;
 }
@@ -342,7 +342,10 @@ function gxLogin(){
  let raw=null;
  try{raw=localStorage.getItem(gxKey());if(!raw){const old=localStorage.getItem("belajarLM2");if(old){raw=old;localStorage.setItem(gxKey(),old);localStorage.removeItem("belajarLM2")}}}catch(e){}
  try{ST=JSON.parse(raw||"{}")}catch(e){ST={}}
- ST.p=ST.p||{};ST.a=ST.a||{};ST.v=ST.v||{};ST.md=ST.md||{};ST.un=ST.un||{};ST.mr=ST.mr||{};ST.tc=ST.tc||{};ST.g=ST.g||{viol:0,log:[]};if(!ST.t0)ST.t0=new Date().toISOString();assignVar();save();
+ ST.p=ST.p||{};ST.a=ST.a||{};ST.v=ST.v||{};ST.md=ST.md||{};ST.un=ST.un||{};ST.mr=ST.mr||{};ST.tc=ST.tc||{};ST.g=ST.g||{viol:0,stot:0,log:[],hist:[]};if(!ST.t0)ST.t0=new Date().toISOString();
+ // Migrasi sesi versi lama yang dahulu dihentikan otomatis pada indikasi ke-3.
+ if(ST.fin&&ST.fin.type==="auto"){delete ST.fin;gxLog(new Date().toLocaleTimeString("id-ID")+" sesi lama dibuka kembali oleh pembaruan: indikasi tidak lagi menghentikan ujian");}
+ assignVar();save();
  document.body.classList.remove("nologin");gxById("gxLogin").style.display="none";
  const bp=document.querySelector(".brand p");if(bp)bp.textContent="UD Lestari Makmur · "+n+" ("+c+")";
  V={home:true,m:null,i:null,tab:0,chk:null,pem:false};render();
@@ -355,6 +358,7 @@ function assignVar(){ST.v=ST.v||{};MAT.forEach((x,m)=>{if(ST.v["m"+m]===undefine
 const ORD_M=[2,3,0,1,4,5,6,7,8,9,10,11],posM=m=>ORD_M.indexOf(m),nextM=m=>{const p=posM(m);return p>=0&&p<ORD_M.length-1?ORD_M[p+1]:-1},prevM=m=>{const p=posM(m);return p>0?ORD_M[p-1]:-1};
 const MD=()=>ST.md||(ST.md={});
 const gxViol=()=>{const g=ST.g||{};return(g.tot||0)+(g.viol||0)};
+function gxLog(t){const g=ST.g=ST.g||{viol:0,log:[]};(g.log=g.log||[]).push(t);(g.hist=g.hist||[]).push(t)}
 const ptsOf=t=>t<=1?100:t===2?90:t===3?80:t===4?70:60;
 const gradeOf=s=>s>=90?"A (Sangat baik)":s>=80?"B (Baik)":s>=70?"C (Cukup)":"D (Perlu latihan)";
 const allOk=m=>m>=0&&[0,1,2,3,4].every(i=>status(m,i)==="ok");
@@ -365,8 +369,8 @@ function mdFill(s){const ch=chain(s.m,s.round-1);s.rows.forEach((r,k)=>{if(!r.co
 function mdRecord(m){
  const ch=chain(m,vr(m)),rows=[0,1,2,3,4].map(i=>{const p=ST.p[key(m,i)]||{},t=p.okTry||p.tries||1;return{i:i+1,lbl:ch.cs[i].lbl,txt:ch.cs[i].txt,bukti:mdBukti(ch.cs[i]),code:mdCode(m,i,vr(m)+1),tries:t,pts:ptsOf(t)}}),
  score=Math.round(rows.reduce((a,r)=>a+r.pts,0)/rows.length),g=ST.g||(ST.g={viol:0,log:[]}),tv=gxViol(),
- r={m,name:MAT[m][1],group:MAT[m][2],t:new Date().toISOString(),round:vr(m)+1,rows,score,grade:gradeOf(score),viol:Math.max(0,tv-(g.mbase||0))};
- g.mbase=tv;mdFill(r);
+ r={m,name:MAT[m][1],group:MAT[m][2],t:new Date().toISOString(),round:vr(m)+1,rows,score,grade:gradeOf(score),viol:Math.max(0,tv-(g.mbase||0)),short:Math.max(0,(g.stot||0)-(g.msb||0)),logs:(g.hist||[]).slice(g.mpos||0)};
+ g.mbase=tv;g.msb=g.stot||0;g.mpos=(g.hist||[]).length;mdFill(r);
  MD()[m]=r;ST.mr=ST.mr||{};ST.mr["m"+m]=vr(m);ST.un=ST.un||{};if(nextM(m)>=0)ST.un[nextM(m)]=1;save();setTimeout(()=>gxSendMd(r),400);return r}
 function mdAfterCheck(m){
  if(m==null||ST.fin||!allOk(m))return;
@@ -449,7 +453,7 @@ function gmRender(){
  h+='<div class="gm-sec">Akun lain di perangkat ini</div>';
  if(!dv.length)h+='<p>Belum ada akun lain yang pernah dipakai di perangkat ini.</p>';
  else{h+='<p>Jika siswa berganti nama setelah kena pelanggaran, lihat posisi akun lamanya lalu lanjutkan dari sana.</p>';
-  dv.forEach(d=>{h+='<div class="gm-row"><b>'+esc2(d.name)+' ('+esc2(d.cls)+')</b><small>'+d.ok+'/'+(MAT.length*5)+' soal benar · '+(d.cur>=0?'materi saat ini: '+(posM(d.cur)+1)+'. '+esc2(MAT[d.cur][1]):'semua materi selesai')+' · pelanggaran '+d.viol+(d.fin==="auto"?' · sesi diakhiri otomatis':'')+'</small>'+(d.cur>=0?'<div class="gm-b"><button class="go" onclick="gmJump('+d.cur+')">Lanjutkan dari materi '+(posM(d.cur)+1)+'</button></div>':'')+'</div>'});}
+  dv.forEach(d=>{h+='<div class="gm-row"><b>'+esc2(d.name)+' ('+esc2(d.cls)+')</b><small>'+d.ok+'/'+(MAT.length*5)+' soal benar · '+(d.cur>=0?'materi saat ini: '+(posM(d.cur)+1)+'. '+esc2(MAT[d.cur][1]):'semua materi selesai')+' · pelanggaran '+d.viol+(d.fin==="auto"?' · sesi versi lama pernah dihentikan otomatis':'')+'</small>'+(d.cur>=0?'<div class="gm-b"><button class="go" onclick="gmJump('+d.cur+')">Lanjutkan dari materi '+(posM(d.cur)+1)+'</button></div>':'')+'</div>'});}
  h+='<div class="gm-act" style="margin-top:12px"><button class="btn" onclick="gmClose()">Tutup</button></div>';
  b.innerHTML=h;
 }
@@ -458,7 +462,7 @@ function gmReopen(){
  ST.g=ST.g||{};ST.g.viol=0;
 }
 function gmAfter(msg){
- (ST.g.log=ST.g.log||[]).push(new Date().toLocaleTimeString("id-ID")+" "+msg);
+ gxLog(new Date().toLocaleTimeString("id-ID")+" "+msg);
  save();gmClose();V={home:true,m:null,i:null,tab:0,chk:null,pem:false};render();
  if(GM.restart&&!ST.fin&&window.gdStart){GM.restart=false;window.gdStart()}
 }
@@ -490,7 +494,8 @@ function mdLines(s){
  const L=["LAPORAN PENILAIAN MATERI","Belajar Transaksi Perusahaan Dagang - UD Lestari Makmur","SMK Ma'arif 1 Semaka","","Kode laporan  : "+s.kode,"","A. DATA SISWA"];
  L.push("Nama lengkap  : "+ME.name,"Kelas         : "+ME.cls,"Materi        : "+(posM(s.m)+1)+" dari "+MAT.length+" - "+s.name+" (kelompok "+s.group+")","Variasi angka : #"+s.round,"Selesai       : "+gxFmt(s.t),"","B. RINCIAN SOAL");
  s.rows.forEach(r=>{L.push(r.code+" ("+r.bukti+") - "+r.lbl,"   "+r.txt,"   Benar di percobaan ke-"+r.tries+" | nilai "+r.pts)});
- L.push("","NILAI MATERI : "+s.score+" / 100","Predikat     : "+s.grade,"Pelanggaran layar pada materi ini : "+s.viol+" kali","","C. KETERANGAN","Nilai per soal: benar di percobaan ke-1 = 100, ke-2 = 90, ke-3 = 80, ke-4 = 70, ke-5 dst = 60.","Nilai materi = rata-rata 5 soal. Kode soal = M(urutan materi)-S(nomor soal)-V(variasi angka siswa).");
+ L.push("","NILAI MATERI : "+s.score+" / 100","Predikat     : "+s.grade,"Indikasi dihitung pada materi ini : "+s.viol+" kali","Gangguan singkat (tidak dihitung) : "+(s.short||0)+" kali","","C. KETERANGAN","Nilai per soal: benar di percobaan ke-1 = 100, ke-2 = 90, ke-3 = 80, ke-4 = 70, ke-5 dst = 60.","Nilai materi = rata-rata 5 soal. Kode soal = M(urutan materi)-S(nomor soal)-V(variasi angka siswa).");
+ L.push("","D. CATATAN INDIKASI");((s.logs&&s.logs.length)?s.logs:["Tidak ada catatan indikasi pada materi ini."]).forEach(x=>L.push(" - "+x));
  return L}
 function mdTXT(s){
  if(!s)return;if(window.gdGrace)window.gdGrace(4000);
@@ -522,9 +527,12 @@ function mdBuild(s){
  y+=4;if(y>245){doc.addPage();y=20}
  doc.setFillColor(GR[0],GR[1],GR[2]);doc.roundedRect(M,y,PW-2*M,26,3,3,"F");
  T(M+8,y+8,"NILAI MATERI","bold",11,[255,255,255]);T(M+8,y+20,String(s.score),"bold",28,[255,255,255]);
- T(M+60,y+12,"Predikat: "+s.grade,"bold",12,[255,255,255]);T(M+60,y+19,"Pelanggaran layar pada materi ini: "+s.viol+" kali","normal",9.5,[255,255,255]);
+ T(M+60,y+12,"Predikat: "+s.grade,"bold",12,[255,255,255]);T(M+60,y+19,"Indikasi dihitung: "+s.viol+" kali  |  gangguan singkat: "+(s.short||0)+" kali","normal",9.5,[255,255,255]);
  y+=37;sec("C. KETERANGAN");
- ["Nilai per soal: benar di percobaan ke-1 = 100, ke-2 = 90, ke-3 = 80, ke-4 = 70, ke-5 dan seterusnya = 60.","Nilai materi adalah rata-rata nilai 5 soal. Kode soal = M(urutan materi)-S(nomor soal)-V(variasi angka siswa).","Satu siswa menghasilkan satu laporan per materi ("+MAT.length+" laporan)."].forEach(t=>doc.splitTextToSize(sf(t),PW-2*M).forEach(q=>{T(M,y,q,"normal",9);y+=4.8}));
+ ["Nilai per soal: benar di percobaan ke-1 = 100, ke-2 = 90, ke-3 = 80, ke-4 = 70, ke-5 dan seterusnya = 60.","Nilai materi adalah rata-rata nilai 5 soal. Kode soal = M(urutan materi)-S(nomor soal)-V(variasi angka siswa).","Satu siswa menghasilkan satu laporan per materi ("+MAT.length+" laporan).","Gangguan layar di bawah 10 detik hanya dicatat. Indikasi yang dihitung ditinjau oleh guru; indikasi tidak otomatis berarti pelanggaran."].forEach(t=>doc.splitTextToSize(sf(t),PW-2*M).forEach(q=>{T(M,y,q,"normal",9);y+=4.8}));
+ y+=3;sec("D. CATATAN INDIKASI (kejadian layar selama materi ini)");
+ const lg=(s.logs&&s.logs.length)?s.logs.slice(0,30):["Tidak ada catatan indikasi pada materi ini."];
+ lg.forEach(t=>doc.splitTextToSize(sf(t),PW-2*M).forEach(q=>{if(y>275){doc.addPage();y=20}T(M,y,q,"normal",8.5);y+=4.4}));
  const n=doc.getNumberOfPages();for(let p=1;p<=n;p++){doc.setPage(p);T(M,287,"Dibuat otomatis oleh aplikasi - "+ME.name+" ("+ME.cls+")","italic",8.5,MUT);doc.setFont("helvetica","normal");doc.setFontSize(8.5);doc.setTextColor(MUT[0],MUT[1],MUT[2]);doc.text("Halaman "+p+" dari "+n,PW-M,287,{align:"right"})}
  return doc}
 function mdPDF(s){
@@ -535,142 +543,82 @@ function mdPDF(s){
 function gxSendMd(s){
  if(!GX_URL||!s)return;
  try{mdFill(s);let pdf="";try{const d=mdBuild(s);if(d)pdf=(d.output("datauristring").split(",")[1])||""}catch(e){}
-  fetch(GX_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({tipe:"materi",latihan:"Belajar Transaksi Perusahaan Dagang",name:ME.name,className:ME.cls,kodeLaporan:s.kode,materi:(posM(s.m)+1)+". "+s.name,kelompok:s.group,variasi:s.round,selesai:s.t,nilai:s.score,predikat:s.grade,pelanggaran:s.viol,soal:s.rows.map(r=>({kode:r.code,bukti:r.bukti,jenis:r.lbl,percobaan:r.tries,nilai:r.pts})),pdfNama:mdFn(s,"pdf"),pdfBase64:pdf})}).catch(()=>{})}catch(e){}}
+  fetch(GX_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({tipe:"materi",latihan:"Belajar Transaksi Perusahaan Dagang",name:ME.name,className:ME.cls,kodeLaporan:s.kode,materi:(posM(s.m)+1)+". "+s.name,kelompok:s.group,variasi:s.round,selesai:s.t,nilai:s.score,predikat:s.grade,pelanggaran:s.viol,gangguanSingkat:s.short||0,catatan:s.logs||[],soal:s.rows.map(r=>({kode:r.code,bukti:r.bukti,jenis:r.lbl,percobaan:r.tries,nilai:r.pts})),pdfNama:mdFn(s,"pdf"),pdfBase64:pdf})}).catch(()=>{})}catch(e){}}
 const _gxDoCheck=doCheck;
 doCheck=function(){const m=V.m,k=key(V.m,V.i);ST.tc=ST.tc||{};ST.tc[k]=(ST.tc[k]||0)+1;_gxDoCheck.apply(this,arguments);const p=ST.p[k];if(p&&p.ok&&!p.okTry){p.okTry=ST.tc[k];save()}mdAfterCheck(m);gxCheckDone()};
 
-/* ---------- MODE UJIAN AMAN: layar penuh + deteksi keluar + kunci layar ----------
-   Pengaturan guru: GUARD_ON (true/false), MAX_VIOLATION (batas pelanggaran), LOCK_SECONDS (jeda tombol kembali) */
+/* ---------- MODE PENGAWASAN UJIAN JARAK JAUH: CATAT TANPA MENGUNCI ----------
+   Browser hanya mencatat aktivitas yang benar-benar dapat diamati. Tidak ada jeda,
+   overlay kunci, penghentian, atau pengumpulan otomatis berdasarkan jumlah indikasi. */
 (function(){
-const GUARD_ON=true,MAX_VIOLATION=3,LOCK_SECONDS=5,GRACE_MS=2000;
-window.gdMax=MAX_VIOLATION;
+const GUARD_ON=true,SHORT_SECONDS=10,SHORT_MS=SHORT_SECONDS*1000;
 if(!GUARD_ON){window.gdStart=function(){};window.gdStop=function(){};return}
-let active=false,locked=false,ended=false,built=false,hooked=false,pushed=false,lockedAt=0,lastEv=0,ignoreUntil=0,busy=0,wasFs=false,wl=null,timer=null,vid=null,rz=null;
-window.gdGrace=function(ms){ignoreUntil=Date.now()+(ms||3000)};const root=document.documentElement,$g=id=>document.getElementById(id),G=()=>ST.g||(ST.g={viol:0,log:[]});
+let active=false,wasFs=false,wl=null,vid=null,away=null,hbT=null,rz=null,tt=null;
+const root=document.documentElement,$g=id=>document.getElementById(id),G=()=>ST.g||(ST.g={viol:0,stot:0,log:[],hist:[]});
 const UA=navigator.userAgent||"",isIOS=/iPad|iPhone|iPod/.test(UA)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
 const fsSupported=!!(root.requestFullscreen||root.webkitRequestFullscreen)&&document.fullscreenEnabled!==false&&document.webkitFullscreenEnabled!==false;
 const isFs=()=>!!(document.fullscreenElement||document.webkitFullscreenElement);
-const clock=()=>new Date().toLocaleTimeString("id-ID");
+const clock=()=>new Date().toLocaleString("id-ID");
+function updBadge(){const b=$g("gdBadge");if(b)b.textContent="Pantauan ujian · indikasi "+(G().viol||0)+" · gangguan singkat "+(G().stot||0)}
 function build(){
- if(built)return;built=true;
- const ov=document.createElement("div");ov.id="gdOverlay";
- ov.innerHTML='<div class="gd-box"><div class="gd-ic">🔒</div><h2 id="gdTitle"></h2><p id="gdWhy"></p><p id="gdCnt"></p><button id="gdBack" type="button"></button><details class="gd-t" id="gdTeacher"><summary>Guru: buka kunci</summary><input id="gdPass" type="password" placeholder="Password guru"><button id="gdUnlock" type="button">Buka</button><div id="gdErr"></div></details></div>';
- document.body.appendChild(ov);
+ if($g("gdBadge"))return;
  const bd=document.createElement("div");bd.id="gdBadge";document.body.appendChild(bd);
- $g("gdBack").addEventListener("click",back);$g("gdUnlock").addEventListener("click",teacherUnlock);
 }
-function updBadge(){const b=$g("gdBadge");if(b)b.textContent="🔒 Mode ujian · pelanggaran "+(G().viol||0)+"/"+MAX_VIOLATION+(fsSupported?"":" · pantauan pindah aplikasi aktif")}
-async function enterFs(){
- try{if(root.requestFullscreen)await root.requestFullscreen({navigationUI:"hide"});else if(root.webkitRequestFullscreen)root.webkitRequestFullscreen()}catch(e){}
- try{if(navigator.keyboard&&navigator.keyboard.lock)await navigator.keyboard.lock(["Escape"])}catch(e){}
- try{if(screen.orientation&&screen.orientation.lock)await screen.orientation.lock("portrait")}catch(e){}
+function logShort(why,seconds){
+ const g=G();g.stot=(g.stot||0)+1;gxLog(clock()+" gangguan singkat "+seconds+" detik ("+why+"), tidak dihitung sebagai indikasi");save();updBadge();toast("Gangguan singkat tercatat");
 }
-function playNoSleep(){
- try{
-  if(!vid){vid=document.createElement("video");vid.setAttribute("playsinline","");vid.setAttribute("muted","");vid.setAttribute("loop","");vid.muted=true;vid.loop=true;
-   vid.style.cssText="position:fixed;left:0;top:0;width:1px;height:1px;opacity:.01;pointer-events:none";
-   vid.src="data:video/mp4;base64,AAAAIGZ0eXBpc29tAAACAGlzb21pc28yYXZjMW1wNDEAAAM4bW9vdgAAAGxtdmhkAAAAAAAAAAAAAAAAAAAD6AAAA+gAAQAAAQAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAmJ0cmFrAAAAXHRraGQAAAADAAAAAAAAAAAAAAABAAAAAAAAA+gAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAABAAAAAAEAAAABAAAAAAAAkZWR0cwAAABxlbHN0AAAAAAAAAAEAAAPoAAAAAAABAAAAAAHabWRpYQAAACBtZGhkAAAAAAAAAAAAAAAAAAAoAAAAKABVxAAAAAAALWhkbHIAAAAAAAAAAHZpZGUAAAAAAAAAAAAAAABWaWRlb0hhbmRsZXIAAAABhW1pbmYAAAAUdm1oZAAAAAEAAAAAAAAAAAAAACRkaW5mAAAAHGRyZWYAAAAAAAAAAQAAAAx1cmwgAAAAAQAAAUVzdGJsAAAAuXN0c2QAAAAAAAAAAQAAAKlhdmMxAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAEAAQABIAAAASAAAAAAAAAABFUxhdmM2MC4zMS4xMDIgbGlieDI2NAAAAAAAAAAAAAAAGP//AAAAL2F2Y0MBQsAK/+EAF2dCwArZBCbARAAAAwAEAAADACg8SJkgAQAFaMuDyyAAAAAQcGFzcAAAAAEAAAABAAAAFGJ0cnQAAAAAAAAVwAAAFcAAAAAYc3R0cwAAAAAAAAABAAAABQAACAAAAAAUc3RzcwAAAAAAAAABAAAAAQAAABxzdHNjAAAAAAAAAAEAAAABAAAABQAAAAEAAAAoc3RzegAAAAAAAAAAAAAABQAAAo8AAAAKAAAACwAAAAoAAAAKAAAAFHN0Y28AAAAAAAAAAQAAA2gAAABidWR0YQAAAFptZXRhAAAAAAAAACFoZGxyAAAAAAAAAABtZGlyYXBwbAAAAAAAAAAAAAAAAC1pbHN0AAAAJal0b28AAAAdZGF0YQAAAAEAAAAATGF2ZjYwLjE2LjEwMAAAAAhmcmVlAAACwG1kYXQAAAJwBgX//2zcRem95tlIt5Ys2CDZI+7veDI2NCAtIGNvcmUgMTY0IHIzMTA4IDMxZTE5ZjkgLSBILjI2NC9NUEVHLTQgQVZDIGNvZGVjIC0gQ29weWxlZnQgMjAwMy0yMDIzIC0gaHR0cDovL3d3dy52aWRlb2xhbi5vcmcveDI2NC5odG1sIC0gb3B0aW9uczogY2FiYWM9MCByZWY9MyBkZWJsb2NrPTE6MDowIGFuYWx5c2U9MHgxOjB4MTExIG1lPWhleCBzdWJtZT03IHBzeT0xIHBzeV9yZD0xLjAwOjAuMDAgbWl4ZWRfcmVmPTEgbWVfcmFuZ2U9MTYgY2hyb21hX21lPTEgdHJlbGxpcz0xIDh4OGRjdD0wIGNxbT0wIGRlYWR6b25lPTIxLDExIGZhc3RfcHNraXA9MSBjaHJvbWFfcXBfb2Zmc2V0PS0yIHRocmVhZHM9MSBsb29rYWhlYWRfdGhyZWFkcz0xIHNsaWNlZF90aHJlYWRzPTAgbnI9MCBkZWNpbWF0ZT0xIGludGVybGFjZWQ9MCBibHVyYXlfY29tcGF0PTAgY29uc3RyYWluZWRfaW50cmE9MCBiZnJhbWVzPTAgd2VpZ2h0cD0wIGtleWludD0yNTAga2V5aW50X21pbj01IHNjZW5lY3V0PTQwIGludHJhX3JlZnJlc2g9MCByY19sb29rYWhlYWQ9NDAgcmM9Y3JmIG1idHJlZT0xIGNyZj0yMy4wIHFjb21wPTAuNjAgcXBtaW49MCBxcG1heD02OSBxcHN0ZXA9NCBpcF9yYXRpbz0xLjQwIGFxPTE6MS4wMACAAAAAF2WIhAR8mKAANiMnJyddddddddddddeAAAAABkGaOAj4RgAAAAdBmlQCPhGAAAAABkGaYBDwjAAAAAZBmoA/wjA=";document.body.appendChild(vid)}
-  const p=vid.play();if(p&&p.catch)p.catch(function(){});
- }catch(e){}
+function logIndication(why,seconds){
+ const g=G();g.viol=(g.viol||0)+1;gxLog(clock()+" INDIKASI #"+g.viol+": "+why+" selama "+seconds+" detik; ujian tetap berjalan");save();updBadge();
 }
-function keepAwake(){
- try{
-  if(navigator.wakeLock&&navigator.wakeLock.request){
-   if(wl)return;
-   navigator.wakeLock.request("screen").then(function(l){wl=l;if(l&&l.addEventListener)l.addEventListener("release",function(){wl=null})}).catch(function(){playNoSleep()});
-  }else playNoSleep();
- }catch(e){playNoSleep()}
+function toast(t){const b=$g("gdBadge");if(!b)return;b.textContent="✓ "+t;clearTimeout(tt);tt=setTimeout(updBadge,3000)}
+function startAway(why){
+ if(!active||ST.fin||away)return;
+ const now=Date.now(),a={t:now,why:why,counted:false};away=a;
+ a.tm=setTimeout(()=>{if(away===a&&!a.counted&&active&&!ST.fin){a.counted=true;logIndication(why,Math.max(SHORT_SECONDS,Math.round((Date.now()-a.t)/1000))) }},SHORT_MS);
 }
-function tick(){if(ended)return;const left=Math.max(0,Math.ceil((lockedAt+LOCK_SECONDS*1000-Date.now())/1000)),b=$g("gdBack");b.disabled=left>0;b.textContent=left>0?"Kembali ke latihan ("+left+")":"Kembali ke latihan"}
-function lock(why){
- locked=true;lockedAt=Date.now();
- $g("gdTitle").textContent="Layar latihan terkunci";
- $g("gdWhy").textContent="Terdeteksi: "+why+".";
- $g("gdCnt").textContent="Pelanggaran "+G().viol+" dari "+MAX_VIOLATION+". Pada pelanggaran ke-"+MAX_VIOLATION+", sesi diakhiri otomatis dan progres dikumpulkan.";
- $g("gdTeacher").style.display="";
- $g("gdOverlay").classList.add("on");tick();
- clearInterval(timer);timer=setInterval(tick,500);
+function endAway(){
+ const a=away;if(!a)return;away=null;clearTimeout(a.tm);
+ const sec=Math.max(0,Math.round((Date.now()-a.t)/1000));
+ if(a.counted){gxLog(clock()+" kembali ke halaman setelah "+sec+" detik (indikasi sudah dicatat)");save();return}
+ if(sec*1000>=SHORT_MS)logIndication(a.why,sec);else logShort(a.why,sec);
 }
-function unlock(){locked=false;clearInterval(timer);$g("gdOverlay").classList.remove("on");ignoreUntil=Date.now()+1500;lastEv=Date.now();enterFs();keepAwake()}
-function back(){
- if(ended){$g("gdOverlay").classList.remove("on");return}
- if(Date.now()<lockedAt+LOCK_SECONDS*1000)return;
- unlock();
-}
-function teacherUnlock(){
- const pw=$g("gdPass").value.trim(),er=$g("gdErr");
- if(!pw){er.textContent="Masukkan password guru.";return}
- if(cyrb(pw,11)!==KEYH){er.textContent="Password salah.";return}
- er.textContent="";$g("gdPass").value="";
- const g=G();g.viol=Math.max(0,(g.viol||0)-1);(g.log=g.log||[]).push(clock()+" kunci dibuka oleh guru");
- save();updBadge();unlock();
-}
-function showEnd(){
- ended=true;clearInterval(timer);
- $g("gdTitle").textContent="Sesi diakhiri otomatis";
- $g("gdWhy").textContent="Pelanggaran aturan mencapai "+MAX_VIOLATION+" kali, sehingga sesi diakhiri dan progres Anda dikumpulkan.";
- $g("gdCnt").textContent="Progres terakhir dapat dilihat setelah menutup pesan ini.";
- $g("gdTeacher").style.display="none";
- const b=$g("gdBack");b.disabled=false;b.textContent="Lihat progres";
- $g("gdOverlay").classList.add("on");
-}
-function violate(why,force){
- if(!active||ST.fin||locked)return;
- const now=Date.now();
- if(!force&&(busy||now<ignoreUntil||now-lastEv<GRACE_MS))return;
- lastEv=now;
- const g=G();g.viol=(g.viol||0)+1;(g.log=g.log||[]).push(clock()+" "+why);
- save();updBadge();
- if(g.viol>=MAX_VIOLATION){locked=true;gxFinish("auto");showEnd()}else lock(why);
-}
-function hookDialogs(){
- if(hooked)return;hooked=true;
- ["confirm","alert","prompt"].forEach(n=>{const o=window[n];if(typeof o!=="function")return;window[n]=function(){busy++;try{return o.apply(window,arguments)}finally{busy--;ignoreUntil=Date.now()+1500}}});
-}
+function checkReturn(){if(!away||!active||document.hidden)return;try{if(!document.hasFocus())return}catch(e){}endAway()}
+async function enterFs(){try{if(root.requestFullscreen)await root.requestFullscreen({navigationUI:"hide"});else if(root.webkitRequestFullscreen)root.webkitRequestFullscreen()}catch(e){}}
+function startHb(){clearInterval(hbT);const f=()=>{if(active&&!ST.fin&&!document.hidden){G().hb=Date.now();try{save()}catch(e){}}};f();hbT=setInterval(f,4000)}
 function examStart(){
- if(ST.fin)return;
- build();active=true;ended=false;locked=false;
- const reload=G().active==="1";
- G().active="1";save();
+ if(ST.fin)return;build();active=true;G().log=G().log||[];G().hist=G().hist||[];G().stot=G().stot||0;G().viol=G().viol||0;
+ const reload=G().active==="1",hb0=G().hb||0;G().active="1";G().hb=Date.now();save();
  document.body.classList.add("gd-on");$g("gdBadge").style.display="block";updBadge();
- hookDialogs();keepAwake();enterFs();
- if(!pushed){try{history.pushState(null,"",location.href);pushed=true}catch(e){}}
- ignoreUntil=Date.now()+1500;
- if(reload)violate("halaman ditutup atau dimuat ulang",true);
+ if(reload){const sec=hb0?Math.max(0,Math.round((Date.now()-hb0)/1000)):0;if(sec>=SHORT_SECONDS)logIndication("halaman ditutup, dimuat ulang, atau sesi tidak terpantau",sec);else logShort("halaman dimuat ulang atau sesi tersambung kembali",sec)}
+ // Fullscreen hanya diminta saat awal. Siswa tetap boleh keluar; aktivitasnya dicatat, bukan dikunci.
+ enterFs();startHb();
 }
 function examEnd(){
- if(!active)return;active=false;
- G().active="0";save();
- document.body.classList.remove("gd-on");
+ if(!active)return;active=false;clearInterval(hbT);if(away){clearTimeout(away.tm);away=null}
+ G().active="0";G().hb=Date.now();save();document.body.classList.remove("gd-on");
  const b=$g("gdBadge");if(b)b.style.display="none";
- try{if(isFs())(document.exitFullscreen||document.webkitExitFullscreen).call(document)}catch(e){}
- try{navigator.keyboard&&navigator.keyboard.unlock&&navigator.keyboard.unlock()}catch(e){}
- try{screen.orientation&&screen.orientation.unlock&&screen.orientation.unlock()}catch(e){}
- try{if(wl){wl.release();wl=null}}catch(e){}
- try{if(vid)vid.pause()}catch(e){}
+ try{if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen();else if(document.webkitFullscreenElement&&document.webkitExitFullscreen)document.webkitExitFullscreen()}catch(e){}
+ try{if(wl){wl.release();wl=null}}catch(e){}try{if(vid)vid.pause()}catch(e){}
 }
-function onFs(){
- if(!active)return;
- if(isFs()){wasFs=true;return}
- if(!wasFs)return;
- violate("keluar dari layar penuh");
-}
+function onFs(){if(!active)return;if(isFs()){wasFs=true;checkReturn()}else if(wasFs)startAway("keluar dari layar penuh")}
 window.gdStart=examStart;window.gdStop=examEnd;
-document.addEventListener("visibilitychange",()=>{if(document.hidden)violate("berpindah tab atau aplikasi");else if(active&&!ST.fin)keepAwake()});
-window.addEventListener("blur",()=>{setTimeout(()=>{const ae=document.activeElement;if(ae&&ae.tagName==="IFRAME")return;if(!document.hasFocus())violate("jendela latihan kehilangan fokus")},400)});
-document.addEventListener("fullscreenchange",onFs);
-document.addEventListener("webkitfullscreenchange",onFs);
-window.addEventListener("beforeunload",e=>{if(active&&!ST.fin){e.preventDefault();e.returnValue="";return ""}});
-window.addEventListener("popstate",()=>{if(active&&!ST.fin){try{history.pushState(null,"",location.href)}catch(e){}}});
-["contextmenu","copy","cut","paste","dragstart","selectstart"].forEach(ev=>document.addEventListener(ev,e=>{
- if(!active||ST.fin)return;const t=e.target&&e.target.tagName;if(t==="INPUT"||t==="TEXTAREA"||t==="SELECT")return;e.preventDefault()},true));
-document.addEventListener("keydown",e=>{
- if(!active||ST.fin)return;const k=(e.key||"").toLowerCase(),c=e.ctrlKey||e.metaKey;
- if(k==="f12"||(c&&e.shiftKey&&["i","j","c"].indexOf(k)>=0)||(c&&["u","s","p"].indexOf(k)>=0)){e.preventDefault();e.stopPropagation()}},true);
-document.addEventListener("keyup",e=>{if(active&&!ST.fin&&e.key==="PrintScreen"){try{navigator.clipboard.writeText("")}catch(x){}violate("tombol PrintScreen")}});
-window.addEventListener("resize",()=>{if(!active||ST.fin||!isIOS)return;clearTimeout(rz);rz=setTimeout(()=>{const m=Math.min(screen.width,screen.height);if(window.innerWidth<m*0.8)violate("ukuran jendela berubah (split view atau slide over)")},800)});
-if(isIOS){try{const r=document.querySelector(".rules");if(r&&r.insertAdjacentElement){const d=document.createElement("div");d.className="gd-ios";d.innerHTML="<b>Pengguna iPhone/iPad, lakukan sebelum mulai:</b><br>1. Pengaturan &gt; Layar &amp; Kecerahan &gt; Kunci Otomatis &gt; <b>Tidak Pernah</b> (agar layar tidak mati dan dihitung pelanggaran).<br>2. Aktifkan <b>Akses Berpemandu</b> (Pengaturan &gt; Aksesibilitas), lalu tekan tombol samping 3 kali setelah sesi dimulai.<br>3. Jika dibuka lewat tautan web: Bagikan &gt; <b>Tambah ke Layar Utama</b>, lalu buka dari ikon agar tampil penuh.";r.insertAdjacentElement("afterend",d)}}catch(e){}}
-document.addEventListener("click",()=>{if(active&&!locked&&!ST.fin&&fsSupported&&!isFs())enterFs()},true);
+document.addEventListener("visibilitychange",()=>{if(document.hidden){if(active){G().hb=Date.now();try{save()}catch(e){}}startAway("berpindah tab atau aplikasi")}else checkReturn()});
+window.addEventListener("focus",checkReturn);
+window.addEventListener("offline",()=>{if(active&&!ST.fin){gxLog(clock()+" koneksi internet terdeteksi offline (gangguan koneksi, bukan indikasi kecurangan)");save()}});
+window.addEventListener("online",()=>{if(active&&!ST.fin){gxLog(clock()+" koneksi internet kembali online");save()}});
+window.addEventListener("pageshow",()=>{if(active)checkReturn()});
+window.addEventListener("pagehide",()=>{if(active&&!ST.fin){startAway("halaman ditutup atau berpindah");G().hb=Date.now();G().active="1";try{gxLog(clock()+" halaman ditutup atau berpindah; menunggu sesi kembali");save()}catch(e){}}});
+window.addEventListener("blur",()=>{setTimeout(()=>{if(!document.hasFocus())startAway("jendela ujian kehilangan fokus")},400)});
+document.addEventListener("fullscreenchange",onFs);document.addEventListener("webkitfullscreenchange",onFs);
+document.addEventListener("click",()=>{if(active&&!ST.fin)checkReturn()},true);
+// Tombol kembali, refresh, menu, dan pemilihan teks tidak diblokir; yang terdeteksi hanya dicatat.
+window.addEventListener("popstate",()=>{if(active&&!ST.fin)gxLog(clock()+" navigasi kembali browser terdeteksi");save()});
+document.addEventListener("contextmenu",e=>{if(active&&!ST.fin){gxLog(clock()+" menu konteks terdeteksi");save()}},true);
+document.addEventListener("copy",()=>{if(active&&!ST.fin){gxLog(clock()+" aktivitas salin terdeteksi");save()}},true);
+document.addEventListener("cut",()=>{if(active&&!ST.fin){gxLog(clock()+" aktivitas potong terdeteksi");save()}},true);
+document.addEventListener("paste",()=>{if(active&&!ST.fin){gxLog(clock()+" aktivitas tempel terdeteksi");save()}},true);
+document.addEventListener("keyup",e=>{if(active&&!ST.fin&&e.key==="PrintScreen"){logIndication("tombol PrintScreen terdeteksi",0)}});
+window.addEventListener("resize",()=>{if(!active||ST.fin||!isIOS)return;clearTimeout(rz);rz=setTimeout(()=>{const m=Math.min(screen.width,screen.height);if(window.innerWidth<m*.8){gxLog(clock()+" ukuran jendela berubah; kemungkinan split view (perlu ditinjau)");save()}},800)});
 })();
 
 </script></body></html>
