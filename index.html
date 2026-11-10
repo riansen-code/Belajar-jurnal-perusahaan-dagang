@@ -232,7 +232,7 @@ ${c?(allok?`<div class="step-res ok"><b>BENAR</b></div>`:`<div class="step-res b
 function render(keep){const y=window.scrollY;if(V.prog||ST.fin){progView();window.scrollTo(0,0);return}if(V.tb){tbView();window.scrollTo(0,0);return}if(V.kunci){kunciView();window.scrollTo(0,keep?y:0);return}$("#sheetBody").innerHTML=V.home?home():V.i==null?materi(V.m):soal();if(V.i!=null&&!V.home){const{ch,sc,UA}=cur();mount($("#zsheet"),sc.ord[V.tab],sc,Object.assign(prefAns(ch.pref),UA),false);if(V.pem){const z=$("#zkey"),EA=expAns(ch,V.i);z.innerHTML=sc.ord.map((k,n)=>`<details><summary>${CFG[k].n}</summary><div id="zk${n}"></div></details>`).join("");sc.ord.forEach((k,n)=>mount($("#zk"+n),k,sc,EA,true))}}window.scrollTo(0,keep?y:0)}
 function goHome(){V={home:true,m:null,i:null,tab:0,chk:null,pem:false};render()}
 function openM(m){if(!mdUnlocked(m)){goHome();return}V={home:false,m,i:null,tab:0,chk:null,pem:false};render()}
-function openS(m,i){if(!mdUnlocked(m)){goHome();return}if(i>0&&status(m,i)!=="ok"&&status(m,i-1)!=="ok"){openM(m);return}V={home:false,m,i,tab:0,chk:null,pem:false};render()}
+function openS(m,i){if(!mdUnlocked(m)){goHome();return}if(i>0&&status(m,i)!=="ok"&&status(m,i-1)!=="ok"){openM(m);return}if(i===0){ST.mStart=ST.mStart||{};const sk="m"+m+"v"+vr(m);if(!ST.mStart[sk]){ST.mStart[sk]=new Date().toISOString();save()}}V={home:false,m,i,tab:0,chk:null,pem:false};render()}
 function doCheck(){const{ch,sc,UA}=cur();answers=Object.assign(prefAns(ch.pref),UA);BUKTI_OPTS=sc.bopts;const c={};sc.ord.forEach(k=>c[k]=chkSheet(k,sc));V.chk=c;const ok=sc.ord.every(k=>!c[k].length),p=ST.p[key(V.m,V.i)]||{tries:0};p.tries++;p.ok=p.ok||ok;ST.p[key(V.m,V.i)]=p;save();render(true)}
 function again(){const{sc,UA}=cur();Object.keys(UA).forEach(k=>{const m=k.match(/^(.+)_(\d+)_[^_]+$/);if(m&&sc.sh[m[1]]&&+m[2]>=sc.off[m[1]]&&+m[2]<sc.off[m[1]]+sc.sh[m[1]].r.length+1)delete UA[k]});delete ST.p[key(V.m,V.i)];V.chk=null;V.pem=false;V.tab=0;save();render()}
 function newNum(m){ST.v["m"+m]=vr(m)+1;[0,1,2,3,4].forEach(i=>{delete ST.p[key(m,i)];if(ST.tc)delete ST.tc[key(m,i)]});V={home:false,m,i:null,tab:0,chk:null,pem:false};save();render()}
@@ -355,19 +355,20 @@ function assignVar(){ST.v=ST.v||{};MAT.forEach((x,m)=>{if(ST.v["m"+m]===undefine
 const ORD_M=[2,3,0,1,4,5,6,7,8,9,10,11],posM=m=>ORD_M.indexOf(m),nextM=m=>{const p=posM(m);return p>=0&&p<ORD_M.length-1?ORD_M[p+1]:-1},prevM=m=>{const p=posM(m);return p>0?ORD_M[p-1]:-1};
 const MD=()=>ST.md||(ST.md={});
 const gxViol=()=>{const g=ST.g||{};return(g.tot||0)+(g.viol||0)};
-function gxLog(t){const g=ST.g=ST.g||{viol:0,log:[]};(g.log=g.log||[]).push(t);(g.hist=g.hist||[]).push(t)}
+function gxLog(t,kind){const g=ST.g=ST.g||{viol:0,log:[]};(g.log=g.log||[]).push(t);(g.hist=g.hist||[]).push(t);g.events=g.events||[];g.events.push({ts:Date.now(),kind:kind||"other",text:String(t)})}
 const ptsOf=t=>t<=1?100:t===2?90:t===3?80:t===4?70:60;
 const gradeOf=s=>s>=90?"A (Sangat baik)":s>=80?"B (Baik)":s>=70?"C (Cukup)":"D (Perlu latihan)";
 const allOk=m=>m>=0&&[0,1,2,3,4].every(i=>status(m,i)==="ok");
 function mdUnlocked(m){return true}
 const mdBukti=c=>[...new Set(((c.codes||[]).join(" ")).match(/[A-Z]{2,3}-\d{2,4}/g)||[])].join(", ");
 const mdCode=(m,i,v)=>"M"+String(posM(m)+1).padStart(2,"0")+"-S"+(i+1)+"-V"+String(v).padStart(2,"0");
+const mdDuration=ms=>{let n=Math.max(0,Math.floor((Number(ms)||0)/1000)),h=Math.floor(n/3600),m=Math.floor(n%3600/60),d=n%60;return(h?h+" jam ":"")+(m?m+" menit ":"")+(d+" detik")};
 function mdFill(s){const ch=chain(s.m,s.round-1);s.rows.forEach((r,k)=>{if(!r.code){const c=ch.cs[k];r.code=mdCode(s.m,k,s.round);r.txt=c.txt;r.bukti=mdBukti(c)}});s.kode="LM-M"+String(posM(s.m)+1).padStart(2,"0")+"-V"+String(s.round).padStart(2,"0");return s}
 function mdRecord(m){
  const ch=chain(m,vr(m)),rows=[0,1,2,3,4].map(i=>{const p=ST.p[key(m,i)]||{},t=p.okTry||p.tries||1;return{i:i+1,lbl:ch.cs[i].lbl,txt:ch.cs[i].txt,bukti:mdBukti(ch.cs[i]),code:mdCode(m,i,vr(m)+1),tries:t,pts:ptsOf(t)}}),
- score=Math.round(rows.reduce((a,r)=>a+r.pts,0)/rows.length),g=ST.g||(ST.g={viol:0,log:[]}),tv=gxViol(),
- r={m,name:MAT[m][1],group:MAT[m][2],t:new Date().toISOString(),round:vr(m)+1,rows,score,grade:gradeOf(score),viol:Math.max(0,tv-(g.mbase||0)),short:Math.max(0,(g.stot||0)-(g.msb||0)),logs:(g.hist||[]).slice(g.mpos||0)};
- g.mbase=tv;g.msb=g.stot||0;g.mpos=(g.hist||[]).length;mdFill(r);
+ score=Math.round(rows.reduce((a,r)=>a+r.pts,0)/rows.length),g=ST.g||(ST.g={viol:0,log:[]}),endMs=Date.now(),t=new Date(endMs).toISOString(),startKey="m"+m+"v"+vr(m),start=ST.mStart&&ST.mStart[startKey]||t,startMs=new Date(start).getTime(),events=(g.events||[]).filter(e=>e&&Number(e.ts)>=startMs&&Number(e.ts)<=endMs),
+ r={m,name:MAT[m][1],group:MAT[m][2],t,start,durationMs:Math.max(0,endMs-startMs),round:vr(m)+1,rows,score,grade:gradeOf(score),viol:events.filter(e=>e.kind==="indication").length,short:events.filter(e=>e.kind==="short").length,logs:events.map(e=>e.text)};
+ mdFill(r);
  MD()[m]=r;ST.mr=ST.mr||{};ST.mr["m"+m]=vr(m);ST.un=ST.un||{};if(nextM(m)>=0)ST.un[nextM(m)]=1;save();setTimeout(()=>gxSendMd(r),400);return r}
 function mdAfterCheck(m){
  if(m==null||ST.fin||!allOk(m))return;
@@ -498,7 +499,7 @@ const mdFn=(s,ext)=>"nilai_materi"+(posM(s.m)+1)+"_"+(ME.name+"_"+ME.cls).replac
 function mdLines(s){
  mdFill(s);
  const L=["LAPORAN PENILAIAN MATERI","Belajar Transaksi Perusahaan Dagang - UD Lestari Makmur","SMK Ma'arif 1 Semaka","","Kode laporan  : "+s.kode,"","A. DATA SISWA"];
- L.push("Nama lengkap  : "+ME.name,"Kelas         : "+ME.cls,"Materi        : "+(posM(s.m)+1)+" dari "+MAT.length+" - "+s.name+" (kelompok "+s.group+")","Variasi angka : #"+s.round,"Selesai       : "+gxFmt(s.t),"","B. RINCIAN SOAL");
+ L.push("Nama lengkap  : "+ME.name,"Kelas         : "+ME.cls,"Materi        : "+(posM(s.m)+1)+" dari "+MAT.length+" - "+s.name+" (kelompok "+s.group+")","Variasi angka : #"+s.round,"Mulai         : "+gxFmt(s.start),"Selesai       : "+gxFmt(s.t),"Total waktu   : "+mdDuration(s.durationMs),"","B. RINCIAN SOAL");
  s.rows.forEach(r=>{L.push(r.code+" ("+r.bukti+") - "+r.lbl,"   "+r.txt,"   Benar di percobaan ke-"+r.tries+" | nilai "+r.pts)});
  L.push("","NILAI MATERI : "+s.score+" / 100","Predikat     : "+s.grade,"Indikasi dihitung pada materi ini : "+s.viol+" kali","Gangguan singkat (tidak dihitung) : "+(s.short||0)+" kali","","C. KETERANGAN","Nilai per soal: benar di percobaan ke-1 = 100, ke-2 = 90, ke-3 = 80, ke-4 = 70, ke-5 dst = 60.","Nilai materi = rata-rata 5 soal. Kode soal = M(urutan materi)-S(nomor soal)-V(variasi angka siswa).");
  L.push("","D. CATATAN INDIKASI");((s.logs&&s.logs.length)?s.logs:["Tidak ada catatan indikasi pada materi ini."]).forEach(x=>L.push(" - "+x));
@@ -519,7 +520,7 @@ function mdBuild(s){
  T(M,21,"Belajar Transaksi Perusahaan Dagang - UD Lestari Makmur","normal",9.5,[255,255,255]);T(M,26.5,"SMK Ma'arif 1 Semaka","normal",9.5,[255,255,255]);
  doc.setTextColor(255,255,255);doc.setFont("helvetica","bold");doc.setFontSize(9);doc.text("KODE LAPORAN",PW-M,14,{align:"right"});doc.setFontSize(13);doc.text(s.kode,PW-M,20,{align:"right"});
  y=43;sec("A. DATA SISWA");
- [["Nama lengkap",ME.name],["Kelas",ME.cls],["Materi",(posM(s.m)+1)+" dari "+MAT.length+" - "+s.name+" (kelompok "+s.group+")"],["Variasi angka","#"+s.round+"  (angka soal berbeda tiap siswa)"],["Selesai",(new Date(s.t)).toLocaleString("id-ID",{dateStyle:"long",timeStyle:"short"})]].forEach(r=>{T(M,y,r[0],"bold",10);T(M+34,y,": "+r[1],"normal",10);y+=6.2});
+ [["Nama lengkap",ME.name],["Kelas",ME.cls],["Materi",(posM(s.m)+1)+" dari "+MAT.length+" - "+s.name+" (kelompok "+s.group+")"],["Variasi angka","#"+s.round+"  (angka soal berbeda tiap siswa)"],["Mulai mengerjakan",s.start?new Date(s.start).toLocaleString("id-ID",{dateStyle:"long",timeStyle:"short"}):"Tidak tercatat"],["Selesai",(new Date(s.t)).toLocaleString("id-ID",{dateStyle:"long",timeStyle:"short"})],["Total waktu",mdDuration(s.durationMs)]].forEach(r=>{T(M,y,r[0],"bold",10);T(M+42,y,": "+r[1],"normal",10);y+=6.2});
  y+=3;sec("B. RINCIAN SOAL");
  const cx=[M+2,M+30,M+132,M+160];
  ["KODE SOAL","SOAL","BENAR DI","NILAI"].forEach((t,k)=>T(cx[k],y,t,"bold",8.5,MUT));
@@ -584,10 +585,10 @@ function startFsCountdown(){
  tick();fsTick=setInterval(tick,250);
 }
 function logShort(why,seconds){
- const g=G();g.stot=(g.stot||0)+1;gxLog(clock()+" gangguan singkat "+seconds+" detik ("+why+"), tidak dihitung sebagai indikasi");save();updBadge();toast("Gangguan singkat tercatat");
+ const g=G();g.stot=(g.stot||0)+1;gxLog(clock()+" gangguan singkat "+seconds+" detik ("+why+"), tidak dihitung sebagai indikasi","short");save();updBadge();toast("Gangguan singkat tercatat");
 }
 function logIndication(why,seconds){
- const g=G();g.viol=(g.viol||0)+1;gxLog(clock()+" INDIKASI #"+g.viol+": "+why+" selama "+seconds+" detik; ujian tetap berjalan");save();updBadge();
+ const g=G();g.viol=(g.viol||0)+1;gxLog(clock()+" INDIKASI #"+g.viol+": "+why+" selama "+seconds+" detik; ujian tetap berjalan","indication");save();updBadge();
 }
 function toast(t){const b=$g("gdBadge");if(!b)return;b.textContent="✓ "+t;clearTimeout(tt);tt=setTimeout(updBadge,3000)}
 function startAway(why){
