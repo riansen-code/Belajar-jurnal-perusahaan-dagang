@@ -253,7 +253,14 @@ function unlockK(){const pw=document.getElementById("keyPass").value.trim(),er=d
 function kunciView(){header("Kunci Jawaban","Khusus guru, dilindungi password","KUNCI");const b=$("#sheetBody");
 if(!KEY.open){b.innerHTML=`<div class="bottom-actions" style="margin:0 0 10px"><button class="btn" onclick="goHome()">← Kembali</button></div><div class="notice">Bagian ini khusus guru. Masukkan password untuk membuka kunci jawaban.</div><div class="key-lock"><input id="keyPass" type="password" autocomplete="off" placeholder="Password" onkeydown="if(event.key==='Enter')unlockK()"><button class="btn primary" onclick="unlockK()">Buka kunci jawaban</button><p id="keyErr" class="key-err"></p></div>`;return}
 b.innerHTML=`<div class="bottom-actions" style="margin:0 0 10px"><button class="btn" onclick="goHome()">← Kembali</button><button class="btn" onclick="KEY.open=false;kunciView()">🔒 Kunci kembali</button></div>
-<div class="section-title">Materi</div><div class="key-tabs">${MAT.map((x,m)=>`<button class="chip${m===KEY.m?" on":""}" onclick="KEY.m=${m};KEY.i=0;kunciView()">${x[0]} ${x[1]}</button>`).join("")}<button class="chip${KEY.m===MAT.length?" on":""}" onclick="KEY.m=${MAT.length};KEY.i=0;KEY.v=1;kunciView()">Rekapitulasi</button></div>`;
+<div class="section-title">Materi</div><div class="key-tabs">${MAT.map((x,m)=>`<button class="chip${m===KEY.m?" on":""}" onclick="KEY.m=${m};KEY.i=0;kunciView()">${x[0]} ${x[1]}</button>`).join("")}<button class="chip${KEY.m===MAT.length?" on":""}" onclick="KEY.m=${MAT.length};KEY.i=0;KEY.v=1;kunciView()">Rekapitulasi</button><button class="chip${KEY.m===MAT.length+1?" on":""}" onclick="KEY.m=${MAT.length+1};KEY.i=0;KEY.v=1;kunciView()">Daftar Saldo</button></div>`;
+if(KEY.m===MAT.length+1){
+ const pkg=Math.min(10,Math.max(1,KEY.v||1)),data=dsBuild(pkg,1),q=data[KEY.i];
+ b.innerHTML+=`<div class="section-title">Paket Daftar Saldo</div><div class="key-tabs">${Array.from({length:10},(_,j)=>j+1).map(n=>`<button class="chip${n===pkg?" on":""}" onclick="KEY.v=${n};KEY.i=0;kunciView()">Paket ${n}</button>`).join("")}</div>
+ <div class="section-title">Soal</div><div class="key-tabs">${data.map((x,j)=>`<button class="chip${j===KEY.i?" on":""}" onclick="KEY.i=${j};kunciView()">Soal ${j+1}</button>`).join("")}</div>
+ <div class="step-box"><div class="step-head"><span class="step-pill">Paket ${pkg} · Soal ${KEY.i+1}/3</span><span class="tag">${q.name}</span></div>${dsLedgers(q)}${dsSheet(q,KEY.i,true)}<div class="step-res ok"><b>Kunci jawaban daftar saldo</b>${dsExplain(q)}<p><b>Rincian saldo:</b><br>${q.ents.map(e=>`${rkEsc(e.code)} — ${rkEsc(e.name)}: ${dsB(e.final)}`).join('<br>')}<br><b>Total: ${rkFmt(dsTot(q))}</b></p></div></div>`;
+ return;
+}
 if(KEY.m===MAT.length){
  const pkg=Math.min(20,Math.max(1,KEY.v||1)),data=rkBuild(pkg,1),q=data[KEY.i],e=rkExpected(q);
  b.innerHTML+=`<div class="section-title">Paket Rekapitulasi</div><div class="key-tabs">${Array.from({length:20},(_,j)=>j+1).map(n=>`<button class="chip${n===pkg?" on":""}" onclick="KEY.v=${n};KEY.i=0;kunciView()">Paket ${n}</button>`).join("")}</div>
