@@ -244,9 +244,10 @@ function newNum(m){ST.v["m"+m]=vr(m)+1;[0,1,2,3,4].forEach(i=>{delete ST.p[key(m
 document.addEventListener("input",e=>{const t=e.target,k=t.dataset&&t.dataset.key;if(!k||V.i==null||V.home)return;cur().UA[k]=t.value;save()});
 document.addEventListener("change",e=>{const t=e.target,k=t.dataset&&t.dataset.key;if(!k||V.i==null||V.home)return;cur().UA[k]=t.value;save()});
 /* ---------- Neraca Saldo (nomor akun) & Kunci Jawaban ---------- */
-let VB=null;const KEYH="7473721754773185";let KEY={open:false,m:0,i:0,v:1};
-function openTB(){VB=V;V={home:false,tb:true,m:null,i:null,tab:0,chk:null,pem:false};render()}
-function closeTB(){V=VB||{home:true,m:null,i:null,tab:0,chk:null,pem:false};render(true)}
+let VB=null,TB_RETURN=null,TB_SCROLL=0;const KEYH="7473721754773185";let KEY={open:false,m:0,i:0,v:1};
+function openTB(){TB_RETURN=null;VB=V;V={home:false,tb:true,m:null,i:null,tab:0,chk:null,pem:false};render()}
+function openTBRK(){TB_RETURN='rk';TB_SCROLL=window.scrollY;V={home:false,tb:true,m:null,i:null,tab:0,chk:null,pem:false};render()}
+function closeTB(){if(TB_RETURN==='rk'){TB_RETURN=null;rkRender(true);window.scrollTo(0,TB_SCROLL);return}V=VB||{home:true,m:null,i:null,tab:0,chk:null,pem:false};render(true)}
 function tbView(){header("Neraca Saldo","Daftar akun dan nomor akun (Kode)","NERACA SALDO");$("#sheetBody").innerHTML=`<div class="bottom-actions" style="margin:0 0 10px"><button class="btn" onclick="closeTB()">← Kembali</button></div><input id="tbq" placeholder="Cari nama atau nomor akun…" oninput="tbFilter()" autocomplete="off" style="width:100%;padding:11px;margin:0 0 10px;border:1.5px solid #c8d6ce;border-radius:10px">`+renderTB().replace("titik awal transaksi Januari 2026","titik awal transaksi latihan")}
 function tbFilter(){const q=document.getElementById("tbq").value.toLowerCase();document.querySelectorAll("#sheetBody tbody tr").forEach(tr=>{if(tr.classList.contains("sj-foot"))return;tr.style.display=tr.textContent.toLowerCase().includes(q)?"":"none"})}
 function openKunci(){V={home:false,kunci:true,m:null,i:null,tab:0,chk:null,pem:false};render()}
@@ -836,7 +837,7 @@ function rkRender(keep){
  }else{
   const done=RK.data.every((_,j)=>RK.checked[j]===true);
   if(!done){
-   html+=`<div class="bottom-actions" style="margin:0 0 12px"><button class="btn" onclick="rkToList()">← Rekapitulasi Penilaian</button><button class="btn" onclick="openTB()">📒 Nomor akun</button></div><div class="step-box"><div class="step-head"><span class="step-pill">Soal ${i+1} / 6</span><span class="tag">Rekapitulasi</span><span class="tag">Percobaan ${RK.attempts[i]||0}</span></div><p class="step-desc">${rkEsc(d.name)}. Lengkapi lembar jurnal dan tabel Recapitulation berdasarkan data transaksi yang tersedia.</p><p class="step-hint"><b>Untuk lembar jawaban:</b> Isi baris TOTAL, ACCOUNT NUMBER, Pos Ref pada Jurnal Umum, serta tabel Recapitulation.</p></div>${rkJournal(d,i,false)}${rkRecapTable(d,i,false)}<div class="bottom-actions"><button class="btn primary lesson-action" onclick="rkCheck(${i})">✔ Periksa jawaban</button></div>`;
+   html+=`<div class="bottom-actions" style="margin:0 0 12px"><button class="btn" onclick="rkToList()">← Rekapitulasi Penilaian</button><button class="btn" onclick="openTBRK()">📒 Nomor akun</button></div><div class="step-box"><div class="step-head"><span class="step-pill">Soal ${i+1} / 6</span><span class="tag">Rekapitulasi</span><span class="tag">Percobaan ${RK.attempts[i]||0}</span></div><p class="step-desc">${rkEsc(d.name)}. Lengkapi lembar jurnal dan tabel Recapitulation berdasarkan data transaksi yang tersedia.</p><p class="step-hint"><b>Untuk lembar jawaban:</b> Isi baris TOTAL, ACCOUNT NUMBER, Pos Ref pada Jurnal Umum, serta tabel Recapitulation.</p></div>${rkJournal(d,i,false)}${rkRecapTable(d,i,false)}<div class="bottom-actions"><button class="btn primary lesson-action" onclick="rkCheck(${i})">✔ Periksa jawaban</button></div>`;
    if(RK.checked[i]===false)html+=`<div class="step-res bad"><b>Masih ada jawaban yang belum tepat.</b> Periksa kembali TOTAL, ACCOUNT NUMBER, dan Recapitulation. Kamu tetap mengerjakan soal ini dan boleh mencoba lagi.</div>`;
    html+='</div><div class="scorebox"><h3>Progres penilaian</h3><p>'+RK.data.filter((_,j)=>RK.checked[j]===true).length+' dari 6 soal sudah benar.</p><p class="hint">Soal berikutnya terbuka setelah jawaban soal ini benar.</p></div>';
   }else{
